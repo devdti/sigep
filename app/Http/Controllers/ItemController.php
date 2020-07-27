@@ -29,11 +29,9 @@ class ItemController extends Controller
     public function create($id)
     {
         //
-        $itens = DB::table('item')->where('processo_id',$id)->get();
-        
+        $itens = DB::table('item')->where("processo_id", $id)->get();
         $processo = Processo::find($id);
-        return view('item.cadastroItem',compact('processo','itens'));
-        
+        return view('item.cadastroItem', compact('processo', 'itens'));
     }
 
     /**
@@ -45,15 +43,18 @@ class ItemController extends Controller
     public function store(Request $request)
     {
         //
+        $item = DB::table('item')->where("processo_id", $request->processo)->get();
+        $itensQuantidade = $item->count();
+
         Item::create([
             "user_id" => Auth::user()->id,
-            "processo_id" =>$request->processo,
+            "processo_id" => $request->processo,
             "descricao" => $request->descricao,
-            "numero" => $request->numero,
+            "numero" => $itensQuantidade+1,
             "unidade" => $request->unidade,
-            "quantidade"=>$request->quantidade
+            "quantidade" => $request->quantidade
         ]);
-        return back()->with(["status"=>'item cadastrado']);
+        return back()->with(["status" => 'item cadastrado']);
     }
 
     /**
@@ -76,6 +77,10 @@ class ItemController extends Controller
     public function edit($id)
     {
         //
+        $itemAtual = Item::find($id);
+        $itens = Item::all()->where('processo_id', $itemAtual->processo_id);
+        $processo = Processo::find($itemAtual->processo_id);
+        return view('item.editarItem', compact('itemAtual', 'processo', 'itens'));
     }
 
     /**
@@ -88,6 +93,12 @@ class ItemController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $updateItem = Item::find($id);
+        $updateItem->descricao = $request->descricao;
+        $updateItem->unidade = $request->unidade;
+        $updateItem->quantidade = $request->quantidade;
+        $updateItem->save();
+        return back()->with(['mensage'=>'Item Atualizado com sucesso.']);
     }
 
     /**
@@ -99,8 +110,7 @@ class ItemController extends Controller
     public function destroy($id)
     {
         //
-        DB::table('item')->where('id',$id)->delete();
+        DB::table('item')->where('id', $id)->delete();
         return back();
-        
     }
 }

@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Empresa;
+use App\Item as AppItem;
 use App\Processo;
+use App\Relatorio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Item;
 use Symfony\Component\Process\Process;
 
 class ProcessoController extends Controller
@@ -49,35 +52,69 @@ class ProcessoController extends Controller
     {
 
         //Cadastro do processo
-
-        $justificativaK = $request->file('justificativa_k')->store('anexos', 'public');
-        $justificativaL = $request->file('justificativa_l')->store('anexos', 'public');
+        //$justificativaK = $request->file('justificativa_k')->store('anexos', 'public');
+        //$justificativaL = $request->file('justificativa_l')->store('anexos', 'public');
         $imagem = new Processo();
         $imagem->user_id = Auth::user()->id;
         $imagem->nome = $request->nome;
-        $imagem->id_secretaria = $request->id_secretaria;
+        $imagem->secretaria = $request->id_secretaria;
         $imagem->cotacao = $request->cotacao;
         $imagem->descricao = $request->descricao;
         $imagem->parametro_1 = $request->parametro_1;
         $imagem->parametro_2 = $request->parametro_2;
-        $imagem->justificativa_k = $justificativaK;
-        $imagem->justificativa_l = $justificativaL;
-        $imagem->save();
-        return redirect()->route('cadastroItem', $imagem->id)->with(['mensage' => 'Processo Cadastrado com sucesso']);
+        //$imagem->justificativa_k = $justificativaK;
+        //$imagem->justificativa_l = $justificativaL;
+
+        $verificaExistencia = Processo::all()->where('nome', $request->nome);
+        if ($verificaExistencia->count() > 0) {
+            return back()->with(['mensage' => 'Processo Cadastrado Com Sucesso ']);
+        } else {
+
+            $imagem->save();
+            return redirect()->route('cadastroItem', $imagem->id)->with(['mensage' => 'Processo Cadastrado com sucesso']);
+        }
     }
 
+    public function finalizarProcesso($id)
+    {
+        $verificaQuantidadeEmpresas = Relatorio::all()->where('id_processo', $id)->count();
+        if ($verificaQuantidadeEmpresas >= 3) {
+            $finalizarProcesso = Processo::find($id);
+            $finalizarProcesso->status = "Encerrado";
+            $finalizarProcesso->save();
+            return redirect()->route('index')->with(['mensage' => "Processo Encerrado"]);
+        } else {
+            return redirect()->route('gerarRelatorio', $id)->with(['alerta' => "Você não pode finalizar o processo com menos de 3 empresas cadastradas no sistema"]);
+        }
+    }
     /**
      * Display the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     public function show()
     {
         //
-        $empresa = Empresa::find();
+        $processos = Processo::all()->where("status",'Aberto');
+        return view('processo.listaProcesso', compact('processos'));
     }
+    public function showEncerrados()
+    {
+        //
+        $processos = Processo::all()->where("status",'Encerrado');
+        return view('processo.listarProcessosEncerrados', compact('processos'));
+    }
+    
 
+    public function statusGeralProcesso($id)
+    {
+        $processo = Processo::find($id);
+        $quantidadeItensProcesso = Item::all()->where('processo_id',$id,)->count();
+        $quantidadeEmpresaProcesso = Empresa::all()->where('processo_id',$id)->count();
+        return view('processo.statusGeralProcesso', compact('processo','quantidadeItensProcesso','quantidadeEmpresaProcesso'));
+    }
     /**
      * Show the form for editing the specified resource.
      *

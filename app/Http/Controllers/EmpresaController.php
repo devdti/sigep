@@ -19,8 +19,8 @@ class EmpresaController extends Controller
     {
         //
         $idProcesso = Processo::find($id);
-        $empresas = Empresa::all()->where('processo_id',$id); // busca todas as empresas do mesmo processo
-        return view("empresa.cadastroEmpresa",compact('idProcesso','empresas'));
+        $empresas = Empresa::all()->where('processo_id', $id); // busca todas as empresas do mesmo processo
+        return view("empresa.cadastroEmpresa", compact('idProcesso', 'empresas'));
     }
 
     /**
@@ -45,13 +45,13 @@ class EmpresaController extends Controller
 
         Empresa::create([
             "user_id" => Auth::user()->id,
-            "processo_id" =>$request->processo,
-            "nome"=>$request->nome,
-            "valor"=>$request->valor,
-            "cnpj"=>$request->cnpj,
-            "descricao"=>$request->descricao
+            "processo_id" => $request->processo,
+            "nome" => $request->nome,
+            "valor" => $request->valor,
+            "cnpj" => $request->cnpj,
+            "descricao" => $request->descricao
         ]);
-        return back()->with(["status"=>'Empresa Cadastrada']);
+        return back()->with(["status" => 'Empresa Cadastrada']);
     }
 
     /**
@@ -74,6 +74,9 @@ class EmpresaController extends Controller
     public function edit($id)
     {
         //
+        $empresaAtual = Empresa::find($id);
+        $empresas = Empresa::all()->where('processo_id',$empresaAtual->processo_id);
+        return view('empresa.editarEmpresa', compact('empresas', 'empresaAtual'));
     }
 
     /**
@@ -86,6 +89,12 @@ class EmpresaController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $empresaAtt = Empresa::find($id);
+        $empresaAtt->nome = $request->nome;
+        $empresaAtt->cnpj = $request->cnpj;
+        $empresaAtt->descricao = $request->descricao;
+        $empresaAtt->save();
+        return back()->with(['mensage' => "Alteração realizada com sucesso"]);
     }
 
     /**
@@ -94,8 +103,10 @@ class EmpresaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroyEmpresa($id)
     {
         //
+        Empresa::find($id)->delete();
+        return back()->with(['status' => "Empresa Excluida"]);
     }
 }
