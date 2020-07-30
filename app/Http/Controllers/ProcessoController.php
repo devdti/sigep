@@ -75,16 +75,23 @@ class ProcessoController extends Controller
         }
     }
 
-    public function finalizarProcesso($id)
+    public function finalizarProcesso(Request $request)
     {
-        $verificaQuantidadeEmpresas = Relatorio::all()->where('id_processo', $id)->count();
+        $verificaQuantidadeEmpresas = Relatorio::all()->where('id_processo', $request->idProcesso)->count();
         if ($verificaQuantidadeEmpresas >= 3) {
-            $finalizarProcesso = Processo::find($id);
+            $justificativa = $request->file('justificativa')->store('anexos', 'public');
+            $finalizarProcesso = Processo::find($request->idProcesso);
+            $finalizarProcesso->painel_de_precos = $request->painel_de_precos ;
+            $finalizarProcesso->banco_de_precos = $request->banco_de_precos ;
+            $finalizarProcesso->contratacoes_similares = $request->contratacoes_similares ;
+            $finalizarProcesso->pesquisa_publicada = $request->pesquisa_publicada;
+            $finalizarProcesso->pesquisa_fornecedores = $request->pesquisa_fornecedores ;
+            $finalizarProcesso->justificativa = $justificativa;
             $finalizarProcesso->status = "Encerrado";
             $finalizarProcesso->save();
             return redirect()->route('index')->with(['mensage' => "Processo Encerrado"]);
         } else {
-            return redirect()->route('gerarRelatorio', $id)->with(['alerta' => "Você não pode finalizar o processo com menos de 3 empresas cadastradas no sistema"]);
+            return redirect()->route('gerarRelatorio', $request->idProcesso)->with(['alerta' => "Você não pode finalizar o processo com menos de 3 empresas cadastradas no sistema"]);
         }
     }
     /**

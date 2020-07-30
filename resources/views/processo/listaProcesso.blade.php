@@ -28,7 +28,7 @@
                                 @foreach($processos as $processo)
                                 <tr>
                                     <td>
-                                        <a href="{{route('gerarRelatorio',$processo->id)}}">
+                                        <a href="{{route('empresaItens',$processo->id)}}">
                                             <div class="col-md-12">
                                                 <div class="card border-left-primary shadow h-100 py-2">
                                                     <div class="card-body">

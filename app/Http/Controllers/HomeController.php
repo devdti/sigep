@@ -30,26 +30,51 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $processos = Processo::all()->where('status', "Aberto");
-        return view('index', compact('processos'));
+        return view('index');
     }
     public function empresaItens($id)
     {
-        $item = Item::all(); //busca todos os itens
-        $empresas = Empresa::all()->where('processo_id', $id); // busca todas as empresas do mesmo processo
-        if ($empresas->count() <= 0) {
-            return redirect()->route('cadastrarEmpresa', $id);
-        }
 
-        return view('empresa.empresaItens', compact('empresas', 'item'));
+        $item = DB::table('item')->where("processo_id", $id)->get(); //busca todos os itens
+        $quantidadeItens = $item->count();
+        $empresas = Empresa::all()->where('processo_id', $id); // busca todas as empresas do mesmo processo
+        $quantidadeEmpresas = $empresas->count();
+        return view('empresa.empresaItens', compact('empresas', 'item', 'id', 'quantidadeItens', 'quantidadeEmpresas'));
     }
 
     public function show($id)
     {
+        //busca a empresa atual
         $empresa = Empresa::find($id);
-        $verificaExistencia =  Relatorio::where('id_empresa',$empresa->id)->first();
+
+        //verifica se existe algum valor cadastrado no sistema com essa empresa e retorna os seus dados caso encontre
+        $verificaExistencia =  DB::table('relatorio')
+            ->join('item', 'relatorio.id_item', '=', 'item.id')
+            ->select('relatorio.*', 'item.numero', 'item.descricao')
+            ->where('relatorio.id_empresa', $id)
+            ->get();
+        $resultadoBusca = $verificaExistencia->count();
+
         $item = Item::all()->where('processo_id', $empresa->processo_id);
-        return view('relatorio.cadastroItemEmpresa', compact('empresa', 'item','verificaExistencia'))->with(['id_processo' => $empresa->idProcesso]);
+        return view('relatorio.cadastroItemEmpresa', compact('empresa', 'item', 'verificaExistencia', 'resultadoBusca'))->with(['id_processo' => $empresa->idProcesso]);
+    }
+    public function editarValor($id)
+    {
+        $relatorio = Relatorio::find($id);
+
+        return view('processo.editarValoresEmpresa', compact('relatorio'));
+    }
+    public function updateValor(Request $request){
+
+        $item = Relatorio::find($request->id);
+        $item->valor = $request->valor;
+        $item->save();
+        return redirect()->route('itemEmpresa', $item->id_empresa)->with(['status' => "Valor Atualizado"]);
+    }
+    //Excluir valores dos itensEmpresas cadastrados
+    public function excluirValor($id){
+        Relatorio::find($id)->delete();
+        return back()->with(['status' => "Dado Excluido"]);
     }
     public function store(Request $request)
     {
@@ -67,7 +92,7 @@ class HomeController extends Controller
             $contador += 1;
         }
 
-        return redirect()->route('empresaItens', ['id' => $request->idProcesso])->with(['mensage' => "Itens adicionados a empresa com sucesso.", 'id_processo' => $request->idProcesso]);
+        return back()->with(['mensage' => "Item adicionado a empresa com sucesso.", 'id_processo' => $request->idProcesso]);
     }
 
     public function gerarRelatorio($id)

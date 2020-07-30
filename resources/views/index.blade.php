@@ -4,69 +4,19 @@
 <div class="row">
   <div class="col-md-12">
     <div class="container-fluid">
-      <!-- Page Heading -->
-      <h1 class="h3 mb-2 text-gray-800">Tables</h1>
-      <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official DataTables documentation</a>.</p>
-      <!-- DataTales Example -->
       <p>@if(Session('mensage'))
         {{Session('mensage')}}
         @endif
       </p>
-      <div class="card shadow mb-4">
-        <div class="card-header py-3">
-          <h4 class="m-0 font-weight-bold text-primary">Processos</h4>
-        </div>
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-              <div class="container">
-                <div class="row">
-                  <div class="col-4">
-                    <a href="cadastroProcesso" class="btn btn-success btn-icon-split">
-                      <span class="icon text-white-50">
-                        <i class="fas fa-check"></i>
-                      </span>
-                      <span class="text">Novo Processo</span>
-                    </a>
-                  </div>
-                </div>
-              </div><br>
-              <thead>
-                <tr>
-                  <th>Todos os Processos</th>
-                </tr>
-              </thead>
-              <tbody>
-                @foreach($processos as $processo)
-                <tr>
-                  <td>
-                    <a href="{{route('empresaItens',$processo->id)}}">
-                      <div class="col-md-12">
-                        <div class="card border-left-primary shadow h-100 py-2">
-                          <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                              <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="font-size: 20px;">{{$processo->descricao}}</div>
-                              </div>
-                              <div class="col-auto">
-                                <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </a>
-                  </td>
-                </tr>
-                @endforeach
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+
+
+      <img class="rounded mx-auto d-block" src="https://comerciolocal.camaragibe.pe.gov.br/images/logo_prefeituracamaragibe2.png" alt="">
+      <h3 class="text-center">Sistema de compras</h3>
     </div>
+
   </div>
-  <!-- /.container-fluid -->
+</div>
+<!-- /.container-fluid -->
 </div>
 <!-- End of Main Content -->
 @endsection

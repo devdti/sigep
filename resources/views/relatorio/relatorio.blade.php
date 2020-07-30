@@ -6,7 +6,7 @@
     <div class="container-fluid">
         <!-- Page Heading -->
         <h1 class="h3 mb-2 text-gray-800">Resultados</h1>
-        <p class="mb-4">Ao Finalizar Processo alterações só poderam ser feitas com a Permisção Do administrador</p>
+        <p class="mb-4">Ao Finalizar Processo, alterações só poderam ser feitas com a Permição do administrador. <br><strong>Obs: Para finalizar o processo é necessário ter ao menos 1 empresa com 3 empresas exequiveis</strong></p>
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
@@ -31,13 +31,8 @@
                                                     <div class="col-sm">
                                                         <h5>
                                                             <button class="btn btn-link" data-toggle="collapse" data-target="#a{{$itens->id}}" aria-expanded="true" aria-controls="collapseOne">
-                                                                ITEM: {{$itens->descricao}}
+                                                                Numero do item: {{$itens->numero}}
                                                             </button>
-                                                        </h5>
-                                                    </div>
-                                                    <div class="col-sm">
-                                                        <h5>
-                                                            Quantidade Itens : {{$itensQuantidade}}
                                                         </h5>
                                                     </div>
                                                 </div>
@@ -46,11 +41,18 @@
                                                         <h5>Cotação : {{$processo->nome}}</h5>
                                                     </div>
                                                     <div class="col-sm">
+                                                        <h5>Valor Total : <label for="" id="valorTotal{{$itens->id}}"></label></h5>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm">
                                                         <h5>Secretaria : {{$processo->secretaria}}</h5>
+                                                    </div>
+                                                    <div class="col-sm">
+                                                        <h5>Menor Valor :<label for="" id="menorValor{{$itens->id}}"></label></h5>
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div id="a{{$itens->id}}" class="collapse " aria-labelledby="headingOne" data-parent="#accordion">
                                                 <div class="card-body">
                                                     <div class="main-panel">
@@ -62,7 +64,6 @@
                                                                     <div class="card">
                                                                         <div class="card-header card-header-tabs card-header-primary">
                                                                             <h4 class="card-title">Planilha inicial</h4>
-                                                                            <p class="card-category">New employees on 15th September, 2016</p>
                                                                             <p class="card-category">@if (session('mensageRelatorio'))
                                                                                 <div class="alert alert-success" role="alert">
                                                                                     {{ session('mensageRelatorio') }}
@@ -76,7 +77,6 @@
                                                                                         <thead class="text-primary">
                                                                                             <th>Nome Empresa</th>
                                                                                             <th>CNPJ</th>
-                                                                                            <th>Nome Item</th>
                                                                                             <th>Valor</th>
                                                                                         </thead>
                                                                                         <tbody>
@@ -93,9 +93,6 @@
                                                                                                 </td>
                                                                                                 @endif
                                                                                                 @endforeach
-                                                                                                <td>
-                                                                                                    {{$itens->descricao}}
-                                                                                                </td>
                                                                                                 <td>
                                                                                                     {{$relatorio->valor}}
                                                                                                 </td>
@@ -114,7 +111,6 @@
                                                                     <div class="card">
                                                                         <div class="card-header card-header-warning">
                                                                             <h4 class="card-title">Validos</h4>
-                                                                            <p class="card-category">New employees on 15th September, 2016</p>
                                                                         </div>
                                                                         <div class="card-body table-responsive">
                                                                             <table class="table table-hover">
@@ -131,7 +127,7 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-lg-6 col-md-12">
+                                                                <div class="col-lg-6 col-md-12 mt-3">
                                                                     <div class="card">
                                                                         <div class="card-header card-header-warning">
                                                                             <h4 class="card-title">EXEQUÍVEL</h4>
@@ -151,25 +147,20 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-lg-6 col-md-12">
+                                                                <div class="col-lg-6 col-md-12 mt-3 ">
                                                                     <div class="card">
                                                                         <div class="card-header card-header-warning">
                                                                             <h4 class="card-title">Resultado da Cotação</h4>
-                                                                            <p class="card-category">New employees on 15th September, 2016</p>
+                                                                            <p id="resultadoCotacao{{$itens->id}}" class="card-category"></p>
                                                                         </div>
                                                                         <div class="card-body table-responsive">
                                                                             <table class="table table-hover">
                                                                                 <thead class="text-primary">
-                                                                                    <th>Média</th>
                                                                                     <!--<th>Desvio</th>-->
                                                                                     <!--<th>Quadrado do Desvio</th>-->
-                                                                                    <th>Soma Quadrado do Desvio</th>
                                                                                     <th>Coeficiente de variação</th>
                                                                                     <th>Variancia</th>
                                                                                     <th>Desvio Padrao</th>
-                                                                                    <th>Mediana</th>
-                                                                                    <th>Menor Valor</th>
-                                                                                    <th>Total Valor</th>
                                                                                     <!-- <th>Data</th>-->
                                                                                 </thead>
                                                                                 <tbody id="MediaMediana{{$itens->id}}" class="MediaMedianaEmpresa{{$itens->id}}">
@@ -195,18 +186,16 @@
                                         return Array.from(empresas).map(function(empresa) {
                                             var nome = empresa.children[0].textContent;
                                             var cnpj = empresa.children[1].textContent;
-                                            var nomeItem = empresa.children[2].textContent;
-                                            var valorEmpresa = parseFloat(empresa.children[3].textContent);
-                                            var obj = creatObjetoEmpresa(nome, cnpj, nomeItem, valorEmpresa);
+                                            var valorEmpresa = parseFloat(empresa.children[2].textContent);
+                                            var obj = creatObjetoEmpresa(nome, cnpj, valorEmpresa);
                                             return obj;
                                         });
                                     }
 
-                                    function creatObjetoEmpresa(nomeEmpresa, cnpj, nomeItem, valor) {
+                                    function creatObjetoEmpresa(nomeEmpresa, cnpj, valor) {
                                         return {
                                             nome: nomeEmpresa,
                                             cnpj: cnpj,
-                                            nomeItem: nomeItem,
                                             valor: valor,
                                             mediaDosDemais: null,
                                             percentual: null,
@@ -299,24 +288,26 @@
                                     }
 
                                     function criarLinhaCoeficienteVariacao(media, desvio, quadradoDesvio, somaTodosQuadrados, variancia, desvioPadrao, coeficienteVariacao, mediana, menorValor, totalValor) {
-                                        var colunaMedia = '<td>' + media + '</td>';
+                                        var colunaMedia = '<td>' + media.toFixed(2) + '</td>';
                                         //var colunaDesvio = '<td>' + desvio + '</td>';
                                         //var colunaQuadradoDesvio = '<td>' + quadradoDesvio + '</td>';
-
                                         var colunaSomaTodosQuadrados = '<td>' + somaTodosQuadrados + '</td>';
-                                        var colunaVariancia = '<td>' + variancia + '</td>';
+                                        var colunaVariancia = '<td>' + variancia.toFixed(2) + '</td>';
                                         var colunaDesvioPadrao = '<td>' + desvioPadrao + '</td>';
                                         var colunaCoeficienteVariacao = '<td>' + coeficienteVariacao + '</td>';
-                                        var colunaMediana = '<td>' + mediana + '</td>';
-                                        var menorValor = '<td>' + menorValor + '</td>';
-                                        var totalValor = '<td>' + totalValor + '</td>';
-                                        if (coeficienteVariacao <= 25) {
-                                            return '<tr>' + colunaMedia + colunaSomaTodosQuadrados + colunaCoeficienteVariacao + colunaVariancia + colunaDesvioPadrao + "<td>Parametro não ultilizado</td>" + menorValor + totalValor + '</tr>'
+                                        var colunaMediana = '<td>' + mediana.toFixed(2) + '</td>';
+                                        var colunaMenorValor = '<td>' + menorValor + '</td>';
+                                        var colunaTotalValor = '<td>' + totalValor + '</td>';
+                                        document.getElementById('valorTotal{{$itens->id}}').append(totalValor);
+                                        document.getElementById('menorValor{{$itens->id}}').append(menorValor);
+                                        document.getElementById('finalizarProcesso').disabled = false;
+                                        if (colunaCoeficienteVariacao <= 25) {
+                                            document.getElementById('resultadoCotacao{{$itens->id}}').append(' Resultado Media : ' + media);
+                                            return '<tr>' + colunaCoeficienteVariacao + colunaVariancia + colunaDesvioPadrao + '</tr>'
                                         } else {
-                                            return '<tr>' + "<td>Parametro não ultilizado</td>" + colunaSomaTodosQuadrados + colunaCoeficienteVariacao + colunaVariancia + colunaDesvioPadrao + colunaMediana + menorValor + totalValor + '</tr>'
-
+                                            document.getElementById('resultadoCotacao{{$itens->id}}').append('Parametro Utilizado : Mediana -  Resultado Mediana : ' + mediana);
+                                            return '<tr>' + colunaCoeficienteVariacao + colunaVariancia + colunaDesvioPadrao + '</tr>'
                                         }
-
                                     }
 
                                     function calcularPercentual(empresas) {
@@ -413,19 +404,65 @@
                                 <div class="col-2">
                                     <a href="{{ url()->previous() }}" class="btn btn-danger btn-icon-split">
                                         <span class="icon text-white-50">
-                                            <i class="fas fa-trash"></i>
+                                            <i class="fa fa-arrow-left"></i>
                                         </span>
                                         <span class="text">Voltar</span>
                                     </a>
                                 </div>
                                 @if($processo->status != "Encerrado")
-                                <div class="col-4">
-                                    <a href="{{route('finalizarProcesso',$id)}}" class="btn btn-success btn-icon-split">
-                                        <span class="icon text-white-50">
-                                            <i class="fas fa-check"></i>
-                                        </span>
-                                        <span class="text">Finalizar Processo</span>
-                                    </a> </div>
+                                <!-- Button trigger modal -->
+                                <button id="finalizarProcesso" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                                    Finalizar Processo
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Selecione os parametros de pesquisa para finalizar o processo</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="{{route('finalizarProcesso',$id)}}" method="post" enctype="multipart/form-data">
+                                                    @csrf
+                                                    <input type="hidden" name="idProcesso" value="{{$id}}">
+                                                    <div class="checkbox">
+                                                        <label><input name="painel_de_precos" type="checkbox" value="Painel De preços">Painel De preços</label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label><input name="banco_de_precos" type="checkbox" value="Portal do banco de preços">Portal do banco de preços</label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label><input name="contratacoes_similares" type="checkbox" value="Contratações similares de outros entes públicos">Contratações similares de outros entes públicos</label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label><input name="pesquisa_publicada" type="checkbox" value="Pesquisa publicada em mídia especializada">Pesquisa publicada em mídia especializada</label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label><input name="pesquisa_fornecedores" type="checkbox" value="Pesquisa com os fornecedores">Pesquisa com os fornecedores</label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label><input name="justificativa" type="file">Pesquisa com os fornecedores</label>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                        <input type="submit" class="btn btn-success" value="Finalizar Processo">
+                                                        <span class="icon text-white-50">
+                                                            <i class="fas fa-check"></i>
+                                                        </span>
+                                                    </div>
+                                                </form>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
                                 @else
                                 <div class="col-4">
                                     <a onclick="window.print()" class="btn btn-success btn-icon-split">

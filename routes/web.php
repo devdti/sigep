@@ -51,10 +51,14 @@ Route::post('/updateEmpresa/{id}','EmpresaController@update')->name('updateEmpre
 Route::get('statusGeralProcesso/{id}','ProcessoController@statusGeralProcesso')->name('statusGeralProcesso');
 //cadastrar Item Empresa
 Route::get('/itemEmpresa/{id}','HomeController@show')->name('itemEmpresa');
-//gerar Relatorio
-
+//Relatorio
 Route::post('/relatorio','HomeController@store')->name('relatorio');
 Route::get('/gerarRelatorio/{id}','HomeController@gerarRelatorio')->name('gerarRelatorio');
 Route::get('listarProcessos','ProcessoController@show')->name('listarProcessos');
 Route::get('/listarProcessosEncerrados','ProcessoController@showEncerrados')->name('listarProcessosEncerrados');
-Route::get('/finalizarProcesso/{id}','ProcessoController@finalizarProcesso')->name('finalizarProcesso');
+Route::post('/finalizarProcesso/{id}','ProcessoController@finalizarProcesso')->name('finalizarProcesso');
+
+//editar valores item empresa
+Route::get('editarValor/{id}','HomeController@editarValor')->name('editarValor');
+Route::post('updateValor','HomeController@updateValor')->name('updateValor');
+Route::get('excluirValor/{id}','HomeController@excluirValor')->name('excluirValor');

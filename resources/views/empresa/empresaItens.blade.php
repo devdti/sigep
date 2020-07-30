@@ -17,6 +17,8 @@
           <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Empresas
             </h6>
+            <h6>Quantidade Empresas : <strong>{{$quantidadeEmpresas}}</strong></h6>
+            <h6>Quantidade Itens : <strong>{{$quantidadeItens}}</strong></h6>
           </div>
           @if(Session('mensage'))
           <div class="card shadow mb-4">
@@ -29,6 +31,7 @@
                 <thead>
                   <tr>
                     <th>Relacionar Empresas, Itens e Preços</th>
+
                   </tr>
                 </thead>
 
@@ -45,6 +48,7 @@
                                   <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="font-size: 20px;">{{$empresa->nome}}</div>
                                 </div>
                                 <div class="col-auto">
+                                 
                                   <i class="fas fa-calendar fa-2x text-gray-300"></i>
                                 </div>
                               </div>
@@ -62,14 +66,13 @@
                   <div class="col-2">
                     <a href="/" class="btn btn-danger btn-icon-split">
                       <span class="icon text-white-50">
-
+                        <i class="fa fa-arrow-left"></i>
                       </span>
                       <span class="text">Sair</span>
                     </a>
                   </div>
-
                   <div class="col-md-3">
-                    <a href="{{route('cadastrarEmpresa',$empresa->processo_id)}}" class="btn btn-success btn-icon-split">
+                    <a href="{{route('cadastrarEmpresa',$id)}}" class="btn btn-success btn-icon-split">
                       <span class="icon text-white-50">
                         <i class="fas fa-flag"></i>
                       </span>
@@ -77,7 +80,7 @@
                     </a>
                   </div>
                   <div class="col-md-3">
-                    <a href="{{route('cadastroItem',$empresa->processo_id)}}" class="btn btn-success btn-icon-split">
+                    <a href="{{route('cadastroItem',$id)}}" class="btn btn-success btn-icon-split">
                       <span class="icon text-white-50">
                         <i class="fas fa-flag"></i>
                       </span>
@@ -88,7 +91,7 @@
 
 
                   <div class="col-md-4">
-                    <a href="{{route('gerarRelatorio',$empresa->processo_id)}}" class="btn btn-primary btn-icon-split">
+                    <a href="{{route('gerarRelatorio',$id)}}" class="btn btn-primary btn-icon-split">
                       <span class="icon text-white-50">
                         <i class="fas fa-check"></i>
                       </span>

@@ -9,6 +9,6 @@ class Processo extends Model
     //
     protected $table = "processo";
     protected $fillable = [
-        'nome','user_id', 'descricao','parametro_1','parametro_2','justificativa_k','justificativa_l','secretaria'
+        'nome','user_id', 'descricao','painel_de_precos','banco_de_precos','contratacoes_similares','pesquisa_publicada','pesquisa_fornecedores','justificativa','secretaria'
     ];
 }
