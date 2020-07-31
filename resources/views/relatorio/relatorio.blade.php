@@ -5,51 +5,77 @@
 <div class="col-md-12" id="teste">
     <div class="container-fluid">
         <!-- Page Heading -->
-        <h1 class="h3 mb-2 text-gray-800">Resultados</h1>
-        <p class="mb-4">Ao Finalizar Processo, alterações só poderam ser feitas com a Permição do administrador. <br><strong>Obs: Para finalizar o processo é necessário ter ao menos 1 empresa com 3 empresas exequiveis</strong></p>
+        <h1 class="h3 mb-2 text-gray-800">{{$processo->nome}}</h1>
+        <p class="mb-4">Ao Finalizar Processo, novas alterações só poderam ser feitas com a Permição do administrador. <br><strong>Obs: Para finalizar o processo é necessário ter 3 empresas exequiveis</strong></p>
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h4 class="m-0 font-weight-bold text-primary">Cotação</h4><br>
+                <h4 class="m-0 font-weight-bold text-primary">Resultado Cotação</h4>
                 @if(Session('alerta'))
                 <strong class="alert alert-danger">{{Session('alerta')}}</strong>
                 @endif
             </div>
             <div class="card-body">
+                <select id="myInput" class="form-control " i>
+                    <option value="">Selecione o filtro</option>
+                    <option value="Concluído">Concluído</option>
+                    <option value="Pendente">Pendente</option>
+                    <option value="">Tudo</option>
+                </select>
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+
                         <div id="accordion">
                             @foreach($item as $itens)
+                            <!--script para filtro  -->
+                            <script>
+                                $(document).ready(function() {
+                                    $("#myInput").change(function(event) {
+                                        var value = event.currentTarget.value;
+                                        $("#myTable{{$itens->id}} tr").filter(function() {
+                                            $(this).toggle($(this).text().indexOf(value) > -1)
+                                        });
+                                    });
+                                });
+                            </script>
                             <table class="col-md-12">
                                 <thead>
                                 </thead>
-                                <tbody>
+                                <tbody id="myTable{{$itens->id}}">
                                     <td>
                                         <div class="card">
-                                            <div class="card-header" id="headingOne">
+                                            <div class="card-header" id="headingOne{{$itens->id}}">
                                                 <div class="row">
                                                     <div class="col-sm">
                                                         <h5>
-                                                            <button class="btn btn-link" data-toggle="collapse" data-target="#a{{$itens->id}}" aria-expanded="true" aria-controls="collapseOne">
-                                                                Numero do item: {{$itens->numero}}
+                                                            <button class="btn btn-link mt-2" data-toggle="collapse" data-target="#a{{$itens->id}}" class="#a{{$itens->id}}" aria-expanded="true" aria-controls="collapseOne">
+                                                                <h5>Número do item: {{$itens->numero}}</h5>
                                                             </button>
+                                                            Status : <label for="" id="demo{{$itens->id}}"> </label>
+
+                                                            <br>
+
                                                         </h5>
+                                                        <label class="ml-3" style="margin-top:-40px">Descrição do item: {{$itens->descricao}}</label>
+                                                    </div>
+                                                    <div class="col-md5">
+
+                                                        <button class="btn btn-link mt-2" data-toggle="collapse" data-target="#a{{$itens->id}}" class="#a{{$itens->id}}" aria-expanded="true" aria-controls="collapseOne">
+                                                            <i class="fas fa-arrow-circle-down fa-3x"></i>
+                                                        </button>
+
+
+
                                                     </div>
                                                 </div>
-                                                <div class="row">
-                                                    <div class="col-sm">
-                                                        <h5>Cotação : {{$processo->nome}}</h5>
-                                                    </div>
-                                                    <div class="col-sm">
-                                                        <h5>Valor Total : <label for="" id="valorTotal{{$itens->id}}"></label></h5>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-sm">
-                                                        <h5>Secretaria : {{$processo->secretaria}}</h5>
-                                                    </div>
-                                                    <div class="col-sm">
-                                                        <h5>Menor Valor :<label for="" id="menorValor{{$itens->id}}"></label></h5>
+
+                                                <div class="row ">
+                                                    <div class="col-sm ml-3 ">
+
+                                                        <label>Menor Valor : <strong for="" id="menorValor{{$itens->id}}"></strong></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        <label>Quantidade : <strong id="quantidadeItem{{$itens->id}}">{{$itens->quantidade}}</strong></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        <label>Valor total do Item : <strong for="" id="valorTotal{{$itens->id}}"></strong></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -62,8 +88,8 @@
                                                             <div class="row">
                                                                 <div class="col-lg-6 col-md-12">
                                                                     <div class="card">
-                                                                        <div class="card-header card-header-tabs card-header-primary">
-                                                                            <h4 class="card-title">Planilha inicial</h4>
+                                                                        <div class="card-header card-header-primary">
+                                                                            <h5 class="card-title">Relação de Empresas</h5>
                                                                             <p class="card-category">@if (session('mensageRelatorio'))
                                                                                 <div class="alert alert-success" role="alert">
                                                                                     {{ session('mensageRelatorio') }}
@@ -75,7 +101,7 @@
                                                                                 <div class="tab-pane active" id="profile">
                                                                                     <table class="table table-hover">
                                                                                         <thead class="text-primary">
-                                                                                            <th>Nome Empresa</th>
+                                                                                            <th>Empresa</th>
                                                                                             <th>CNPJ</th>
                                                                                             <th>Valor</th>
                                                                                         </thead>
@@ -110,12 +136,14 @@
                                                                 <div class="col-lg-6 col-md-12">
                                                                     <div class="card">
                                                                         <div class="card-header card-header-warning">
-                                                                            <h4 class="card-title">Validos</h4>
+                                                                            <h5 class="card-title">Válidos <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="rigth" title="Será considerado manifestamente inexequível o preço cujo valor represente
+menos de 70% (setenta por cento) da média aritmética dos demais preços analisados. Conforme Art.10 da Resolução 001/2020/CGN">
+                                                                                </i></h5>
                                                                         </div>
                                                                         <div class="card-body table-responsive">
                                                                             <table class="table table-hover">
                                                                                 <thead class="text-primary">
-                                                                                    <th>Nome</th>
+                                                                                    <th>Empresa</th>
                                                                                     <th>Valor</th>
                                                                                     <th>Percentual</th>
                                                                                     <th>Status</th>
@@ -130,13 +158,15 @@
                                                                 <div class="col-lg-6 col-md-12 mt-3">
                                                                     <div class="card">
                                                                         <div class="card-header card-header-warning">
-                                                                            <h4 class="card-title">EXEQUÍVEL</h4>
-                                                                            <p class="card-category">New employees on 15th September, 2016</p>
+                                                                            <h5 class="card-title">Exequível <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="rigth" title="Será considerado excessivo o preço que for superior a 30% (trinta por cento) da
+média aritmética dos demais valores avaliados.">
+                                                                                </i>
+                                                                            </h5>
                                                                         </div>
                                                                         <div class="card-body table-responsive">
                                                                             <table class="table table-hover">
                                                                                 <thead class="text-primary">
-                                                                                    <th>Nome</th>
+                                                                                    <th>Empresa</th>
                                                                                     <th>Valor</th>
                                                                                     <th>Percentual</th>
                                                                                     <th>Status</th>
@@ -150,17 +180,20 @@
                                                                 <div class="col-lg-6 col-md-12 mt-3 ">
                                                                     <div class="card">
                                                                         <div class="card-header card-header-warning">
-                                                                            <h4 class="card-title">Resultado da Cotação</h4>
-                                                                            <p id="resultadoCotacao{{$itens->id}}" class="card-category"></p>
+                                                                            <h4 class="card-title">Parâmetros da Cotação</h4>
+                                                                            <p class="card-category">
+                                                                                Parâmetro Utilizado : <strong id="resultadoCotacao{{$itens->id}}"></strong> <br>
+                                                                                Resultado da Mediana : <strong id="resultadoCotacaoMediana{{$itens->id}}"></strong>
+                                                                            </p>
                                                                         </div>
                                                                         <div class="card-body table-responsive">
                                                                             <table class="table table-hover">
                                                                                 <thead class="text-primary">
                                                                                     <!--<th>Desvio</th>-->
                                                                                     <!--<th>Quadrado do Desvio</th>-->
-                                                                                    <th>Coeficiente de variação</th>
-                                                                                    <th>Variancia</th>
-                                                                                    <th>Desvio Padrao</th>
+                                                                                    <th style="width: 28%;">Coeficiente de variação</th>
+                                                                                    <th>Variância</th>
+                                                                                    <th>Desvio Padrão</th>
                                                                                     <!-- <th>Data</th>-->
                                                                                 </thead>
                                                                                 <tbody id="MediaMediana{{$itens->id}}" class="MediaMedianaEmpresa{{$itens->id}}">
@@ -225,7 +258,7 @@
                                     }
 
                                     function obterEmpresasExequiveis(empresasExequiveis) {
-                                        return empresasExequiveis.filter(empresa => empresa.status != 'INEXEQUÍVEL');
+                                        return empresasExequiveis.filter(empresa => empresa.status == 'Exequível');
                                     }
                                     //fim da criação objeto empresasExequiveis
                                     //Função responsável por calcular todo o processo de calculo da média e mediana
@@ -233,15 +266,16 @@
                                         // var status = empresas.map(empresa => empresa.status);
                                         var valores = empresas.map(empresa => empresa.valor).sort();
                                         if (valores.length < 3) {
-                                            $('#empresaFinal{{$itens->id}}').append("<label style='color:red'>WARNING,VOCÊ PRECISA DE NO MINIMO 3 EMPRESAS EXEQUIVEL PARA CONTINUAR O CALCULO</label>");
-                                            $('#MediaMediana{{$itens->id}}').append("WARNING,VOCÊ PRECISA DE NO MINIMO 3 empresas para calcular");
+                                            $('#empresaFinal{{$itens->id}}').append("<label style='color:red'>Número de cotações mínimas não atingidas.</label>");
+                                            $('#MediaMediana{{$itens->id}}').append("<label style='color:red'>Número de cotações mínimas não atingidas.</label>");
                                         } else {
                                             var somaTodosQuadrados = 0;
                                             var menorValor, totalValor, media, mediana, desvio, quadradoDesvio, variancia, coeficienteDeVariacao, desvioPadrao;
 
                                             empresas.forEach(function(empresa) {
-                                                //Soma todos os valores da lista de Exequiveis
+                                                /*Soma todos os valores da lista de Exequiveis
                                                 totalValor = valores.reduce((a, b) => a + b) * empresas.length;
+                                                Não vai mais ser desta forma...**/
                                                 //calcula a média dos exequiveis 1°
                                                 //valores.filter(valor => valor != "empresa.valor");
                                                 media = valores.reduce((a, b) => a + b) / empresas.length;
@@ -283,12 +317,14 @@
                                             });
                                             //Exibir Resultado                                                       mediana
                                             $('#MediaMediana{{$itens->id}}').append(criarLinhaCoeficienteVariacao(media, desvio, quadradoDesvio, somaTodosQuadrados, variancia, desvioPadrao, coeficienteDeVariacao, mediana, menorValor, totalValor));
-
                                         }
                                     }
 
                                     function criarLinhaCoeficienteVariacao(media, desvio, quadradoDesvio, somaTodosQuadrados, variancia, desvioPadrao, coeficienteVariacao, mediana, menorValor, totalValor) {
-                                        var colunaMedia = '<td>' + media.toFixed(2) + '</td>';
+                                        var quantidadeItem = parseInt(document.getElementById('quantidadeItem{{$itens->id}}').textContent);
+                                        //var resultadoMenorValor
+                                        var totalValor = menorValor * quantidadeItem;
+                                            var colunaMedia = '<td>' + media.toFixed(2) + '</td>';
                                         //var colunaDesvio = '<td>' + desvio + '</td>';
                                         //var colunaQuadradoDesvio = '<td>' + quadradoDesvio + '</td>';
                                         var colunaSomaTodosQuadrados = '<td>' + somaTodosQuadrados + '</td>';
@@ -296,16 +332,20 @@
                                         var colunaDesvioPadrao = '<td>' + desvioPadrao + '</td>';
                                         var colunaCoeficienteVariacao = '<td>' + coeficienteVariacao + '</td>';
                                         var colunaMediana = '<td>' + mediana.toFixed(2) + '</td>';
-                                        var colunaMenorValor = '<td>' + menorValor + '</td>';
+                                        //var colunaMenorValor = '<td>' + resultadoMenorValor + '</td>';
+
                                         var colunaTotalValor = '<td>' + totalValor + '</td>';
                                         document.getElementById('valorTotal{{$itens->id}}').append(totalValor);
+                                        //Trazer o menor valor dos Exequiveis.
                                         document.getElementById('menorValor{{$itens->id}}').append(menorValor);
-                                        document.getElementById('finalizarProcesso').disabled = false;
                                         if (colunaCoeficienteVariacao <= 25) {
-                                            document.getElementById('resultadoCotacao{{$itens->id}}').append(' Resultado Media : ' + media);
+                                            document.getElementById('resultadoCotacao{{$itens->id}}').append('Media');
+                                            document.getElementById('resultadoCotacaoMediana{{$itens->id}}').append(media);
+
                                             return '<tr>' + colunaCoeficienteVariacao + colunaVariancia + colunaDesvioPadrao + '</tr>'
                                         } else {
-                                            document.getElementById('resultadoCotacao{{$itens->id}}').append('Parametro Utilizado : Mediana -  Resultado Mediana : ' + mediana);
+                                            document.getElementById('resultadoCotacao{{$itens->id}}').append('Mediana');
+                                            document.getElementById('resultadoCotacaoMediana{{$itens->id}}').append(mediana);
                                             return '<tr>' + colunaCoeficienteVariacao + colunaVariancia + colunaDesvioPadrao + '</tr>'
                                         }
                                     }
@@ -313,7 +353,7 @@
                                     function calcularPercentual(empresas) {
                                         var valores = empresas.map(empresa => empresa.valor).sort();
                                         if (valores.length < 3) {
-                                            $('#resultado{{$itens->id}}').append("WARNING,VOCÊ PRECISA DE NO MINIMO 3 empresas para calcular");
+                                            $('#resultado{{$itens->id}}').append("<label style='color:red'>Número de cotações mínimas não atingidas.</label>");
                                         } else {
                                             empresas.forEach(function(empresa) {
                                                 var listaValores = valores.filter(valor => valor != empresa.valor);
@@ -323,10 +363,11 @@
                                                 empresa.percentual = resultado;
                                                 if (resultado >= 30) {
                                                     // se o resultado for > ou = a 30 então o codigo insere na tabela o texto...
-                                                    empresa.status = "EXCESSIVAMENTE ELEVADO"
+
+                                                    empresa.status = "<label style='color:red'>Excessivamente Elevado</label>"
                                                 } else {
                                                     // caso contrario o sistema retorna que é valido.
-                                                    empresa.status = "Valido"
+                                                    empresa.status = "Válido"
                                                 }
 
                                             });
@@ -359,7 +400,7 @@
                                     }
 
                                     function obterEmpresasAprov(empresas) {
-                                        return empresas.filter(empresa => 'Valido' == empresa.status);
+                                        return empresas.filter(empresa => 'Válido' == empresa.status);
                                     }
                                     //
                                     function calcularEmpresaAprov(empresas) {
@@ -372,10 +413,10 @@
                                             empresa.percentual = resultado;
                                             if (resultado < 70) {
                                                 // se o resultado for > ou = a 30 então o codigo insere na tabela o texto...
-                                                empresa.status = "INEXEQUÍVEL"
+                                                empresa.status = "<label style='color:red'> Inexequivel </label>";
                                             } else {
                                                 // caso contrario o sistema retorna que é valido.
-                                                empresa.status = "EXEQUÍVEL"
+                                                empresa.status = "Exequível"
                                             }
                                         });
                                     }
@@ -394,15 +435,35 @@
                                     var empresasExequiveis = converterParaEmpresaExequivel(empresasExequiveisHtml);
                                     var empresasExequiveisFinal = obterEmpresasExequiveis(empresasExequiveis);
                                     calcularMediaeMediana(empresasExequiveisFinal);
+                                    listaTamanhoEmpresas.push(empresasExequiveisFinal.length);
+                                    finalizaProcesso(listaTamanhoEmpresas);
+
+                                    function finalizaProcesso(empresas) {
+                                        //verifica se existe algum item com menos de 3 empresas cadastradas
+                                        var quantidadeEmpresasItem = empresas.find(valor => valor < 3);
+                                        if (quantidadeEmpresasItem < 3) {
+                                            document.getElementById('finalizarProcesso').disabled = true;
+                                            document.getElementById("demo{{$itens->id}}").style.color = "red";
+                                            document.getElementById("demo{{$itens->id}}").innerHTML = "Pendente";
+                                        } else {
+                                            document.getElementById("demo{{$itens->id}}").style.color = "green";
+                                            document.getElementById("demo{{$itens->id}}").innerHTML = "Concluído";
+                                            document.getElementById('finalizarProcesso').disabled = false;
+                                        }
+                                    }
                                 });
                             </script>
                             @endforeach
+                            <script>
+                                //calcular quantidade de empresas
+                                var listaTamanhoEmpresas = [];
+                            </script>
                         </div>
                         <br><br>
                         <div class="container">
                             <div class="row">
                                 <div class="col-2">
-                                    <a href="{{ url()->previous() }}" class="btn btn-danger btn-icon-split">
+                                    <a href="{{ url()->previous() }}" class="btn btn-info btn-icon-split">
                                         <span class="icon text-white-50">
                                             <i class="fa fa-arrow-left"></i>
                                         </span>
@@ -411,7 +472,7 @@
                                 </div>
                                 @if($processo->status != "Encerrado")
                                 <!-- Button trigger modal -->
-                                <button id="finalizarProcesso" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                                <button disabled id="finalizarProcesso" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
                                     Finalizar Processo
                                 </button>
 
@@ -420,7 +481,7 @@
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Selecione os parametros de pesquisa para finalizar o processo</h5>
+                                                <h5 class="modal-title" id="exampleModalLabel">Selecione os parâmetros de pesquisa para finalizar o processo</h5>
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
@@ -445,7 +506,7 @@
                                                         <label><input name="pesquisa_fornecedores" type="checkbox" value="Pesquisa com os fornecedores">Pesquisa com os fornecedores</label>
                                                     </div>
                                                     <div class="checkbox">
-                                                        <label><input name="justificativa" type="file">Pesquisa com os fornecedores</label>
+                                                        <label><input name="justificativa" type="file"> - Justificativa do parâmetro adotado</label>
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -465,7 +526,7 @@
 
                                 @else
                                 <div class="col-4">
-                                    <a onclick="window.print()" class="btn btn-success btn-icon-split">
+                                    <a href="#" onclick="window.print()" class="btn btn-success btn-icon-split">
                                         <span class="icon text-white-50">
                                             <i class="fas fa-check"></i>
                                         </span>

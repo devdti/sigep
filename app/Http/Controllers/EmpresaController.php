@@ -43,6 +43,10 @@ class EmpresaController extends Controller
     {
         //
 
+        $verificaExistencia = Empresa::all()->where('cnpj',$request->cnpj)->count();
+        if($verificaExistencia>0){
+            return back()->with(["mensage" => 'Já existe uma empresa cadastrada com esse CNPJ']);
+        }
         Empresa::create([
             "user_id" => Auth::user()->id,
             "processo_id" => $request->processo,
@@ -107,6 +111,6 @@ class EmpresaController extends Controller
     {
         //
         Empresa::find($id)->delete();
-        return back()->with(['status' => "Empresa Excluida"]);
+        return back()->with(['mensage' => "Empresa Exclúida"]);
     }
 }

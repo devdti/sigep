@@ -30,6 +30,7 @@ class ItemController extends Controller
     {
         //
         $itens = DB::table('item')->where("processo_id", $id)->get();
+        
         $processo = Processo::find($id);
         return view('item.cadastroItem', compact('processo', 'itens'));
     }
@@ -45,7 +46,10 @@ class ItemController extends Controller
         //
         $item = DB::table('item')->where("processo_id", $request->processo)->get();
         $itensQuantidade = $item->count();
-
+        $verificaExistencia = Item::all()->where('descricao',$request->descricao)->count();
+        if($verificaExistencia>0){
+            return back()->with(["cadError" => 'O item já está cadastrado no sistema']);
+        }
         Item::create([
             "user_id" => Auth::user()->id,
             "processo_id" => $request->processo,

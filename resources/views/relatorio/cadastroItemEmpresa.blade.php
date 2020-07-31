@@ -8,12 +8,11 @@
       <div class="container-fluid">
 
         <!-- Page Heading -->
-        <h1 class="h3 mb-2 text-gray-800">Empresas e Itens</h1>
-        <p class="mb-4">Ao colcoar o preço em cada item, o sistema assume automaticamente que a empresa possui o item e os itens em brancos a empresa não possui</p>
+        <h1 class="h3 mb-2 text-gray-800">{{$processo->nome}}</h1><br>
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
           <div class="card-header py-3">
-            <h4 class="m-0 font-weight-bold text-primary">Empresa de exemplo</h4>
+            <h4 class="m-0 font-weight-bold text-primary">Empresa: {{$empresa->nome}} - CNPJ: {{$empresa->cnpj}}</h4>
           </div>
           <div class="card-body">
             @if(Session('mensage'))
@@ -21,6 +20,12 @@
               <strong class="alert alert-success">{{Session('mensage')}}</strong>
             </div>
             @endif
+            @if(Session('mensageError'))
+            <div class="card shadow mb-4">
+              <strong class="alert alert-warning">{{Session('mensageError')}}</strong>
+            </div>
+            @endif
+
             <div class="table-responsive">
               <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <form action="../relatorio" method="post">
@@ -29,8 +34,8 @@
                   <input type="hidden" name="idProcesso" value="{{$empresa->processo_id}}">
                   <thead>
                     <tr>
-                      <th>Numero do item</th>
-                      <th>Descrição do item</th>
+                      <th>N° do item</th>
+                      <th>Descrição</th>
                       <th>Preço</th>
                     </tr>
                   </thead>
@@ -52,6 +57,8 @@
               </table>
               <div class="container">
                 <div class="row">
+                  <div class="col-4"></div>
+                  <div class="col-6"></div>
                   <div class="col-2">
                     <button class="btn btn-success btn-icon-split">
                       <span class="icon text-white-50">
@@ -70,7 +77,7 @@
                       @endif
                       <thead>
                         <tr>
-                          <th>Numero Item</th>
+                          <th>N° do Item</th>
                           <th>Descrição</th>
                           <th>Valor</th>
                           <th>Ação</th>
@@ -93,7 +100,7 @@
                       </tbody>
                     </table>
                     <div class="col-2">
-                      <a href="{{route('empresaItens',$empresa->processo_id)}}" class="btn btn-danger btn-icon-split">
+                      <a href="{{route('empresaItens',$empresa->processo_id)}}" class="btn btn-info btn-icon-split">
                         <span class="icon text-white-50">
                           <i class="fa fa-arrow-left"></i>
                         </span>
@@ -111,6 +118,7 @@
       </div>
     </div>
     <!-- /.container-fluid -->
-
   </div>
-  @endsection
+</div>
+</div>
+@endsection

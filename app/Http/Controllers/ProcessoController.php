@@ -50,7 +50,6 @@ class ProcessoController extends Controller
      */
     public function store(Request $request)
     {
-
         //Cadastro do processo
         //$justificativaK = $request->file('justificativa_k')->store('anexos', 'public');
         //$justificativaL = $request->file('justificativa_l')->store('anexos', 'public');
@@ -60,8 +59,6 @@ class ProcessoController extends Controller
         $imagem->secretaria = $request->id_secretaria;
         $imagem->cotacao = $request->cotacao;
         $imagem->descricao = $request->descricao;
-        $imagem->parametro_1 = $request->parametro_1;
-        $imagem->parametro_2 = $request->parametro_2;
         //$imagem->justificativa_k = $justificativaK;
         //$imagem->justificativa_l = $justificativaL;
 

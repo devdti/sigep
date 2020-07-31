@@ -41,7 +41,7 @@
               <div class="container">
                 <div class="row">
                   <div class="col-2">
-                    <a href="{{route('itemEmpresa',$relatorio->id_empresa)}}" class="btn btn-danger btn-icon-split">
+                    <a href="{{route('itemEmpresa',$relatorio->id_empresa)}}" class="btn btn-info btn-icon-split">
                       <span class="icon text-white-50">
                         <i class="fa fa-arrow-left"></i>
                       </span>
