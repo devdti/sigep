@@ -76,17 +76,31 @@ class ProcessoController extends Controller
     {
         $verificaQuantidadeEmpresas = Relatorio::all()->where('id_processo', $request->idProcesso)->count();
         if ($verificaQuantidadeEmpresas >= 3) {
-            $justificativa = $request->file('justificativa')->store('anexos', 'public');
-            $finalizarProcesso = Processo::find($request->idProcesso);
-            $finalizarProcesso->painel_de_precos = $request->painel_de_precos ;
-            $finalizarProcesso->banco_de_precos = $request->banco_de_precos ;
-            $finalizarProcesso->contratacoes_similares = $request->contratacoes_similares ;
-            $finalizarProcesso->pesquisa_publicada = $request->pesquisa_publicada;
-            $finalizarProcesso->pesquisa_fornecedores = $request->pesquisa_fornecedores ;
-            $finalizarProcesso->justificativa = $justificativa;
-            $finalizarProcesso->status = "Encerrado";
-            $finalizarProcesso->save();
-            return redirect()->route('index')->with(['mensage' => "Processo Encerrado"]);
+            if (isset($request->justificativa)) {
+                //finalização do processo com justificativa.
+                $justificativa = $request->file('justificativa')->store('anexos', 'public');
+                $finalizarProcesso = Processo::find($request->idProcesso);
+                $finalizarProcesso->painel_de_precos = $request->painel_de_precos;
+                $finalizarProcesso->banco_de_precos = $request->banco_de_precos;
+                $finalizarProcesso->contratacoes_similares = $request->contratacoes_similares;
+                $finalizarProcesso->pesquisa_publicada = $request->pesquisa_publicada;
+                $finalizarProcesso->pesquisa_fornecedores = $request->pesquisa_fornecedores;
+                $finalizarProcesso->justificativa = $justificativa;
+                $finalizarProcesso->status = "Encerrado";
+                $finalizarProcesso->save();
+                return redirect()->route('index')->with(['mensage' => "Processo Encerrado"]);
+            } else {
+                //Finalização do processo sem justificativa
+                $finalizarProcesso = Processo::find($request->idProcesso);
+                $finalizarProcesso->painel_de_precos = $request->painel_de_precos;
+                $finalizarProcesso->banco_de_precos = $request->banco_de_precos;
+                $finalizarProcesso->contratacoes_similares = $request->contratacoes_similares;
+                $finalizarProcesso->pesquisa_publicada = $request->pesquisa_publicada;
+                $finalizarProcesso->pesquisa_fornecedores = $request->pesquisa_fornecedores;
+                $finalizarProcesso->status = "Encerrado";
+                $finalizarProcesso->save();
+                return redirect()->route('index')->with(['mensage' => "Processo Encerrado"]);
+            }
         } else {
             return redirect()->route('gerarRelatorio', $request->idProcesso)->with(['alerta' => "Você não pode finalizar o processo com menos de 3 empresas cadastradas no sistema"]);
         }
@@ -101,23 +115,21 @@ class ProcessoController extends Controller
     public function show()
     {
         //
-        $processos = Processo::all()->where("status",'Aberto');
+        $processos = Processo::all()->where("status", 'Aberto');
         return view('processo.listaProcesso', compact('processos'));
     }
     public function showEncerrados()
     {
         //
-        $processos = Processo::all()->where("status",'Encerrado');
+        $processos = Processo::all()->where("status", 'Encerrado');
         return view('processo.listarProcessosEncerrados', compact('processos'));
     }
-    
-
     public function statusGeralProcesso($id)
     {
         $processo = Processo::find($id);
-        $quantidadeItensProcesso = Item::all()->where('processo_id',$id,)->count();
-        $quantidadeEmpresaProcesso = Empresa::all()->where('processo_id',$id)->count();
-        return view('processo.statusGeralProcesso', compact('processo','quantidadeItensProcesso','quantidadeEmpresaProcesso'));
+        $quantidadeItensProcesso = Item::all()->where('processo_id', $id,)->count();
+        $quantidadeEmpresaProcesso = Empresa::all()->where('processo_id', $id)->count();
+        return view('processo.statusGeralProcesso', compact('processo', 'quantidadeItensProcesso', 'quantidadeEmpresaProcesso'));
     }
     /**
      * Show the form for editing the specified resource.
@@ -125,11 +137,15 @@ class ProcessoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function imprimirRelatorio($id)
     {
-        //
+        $processo  = Processo::find($id);
+        $item = DB::table('item')->where("processo_id", $id)->get();
+        $empresas = Empresa::all();
+        $itensQuantidade = $item->count();
+        $relatorios = Relatorio::all();
+        return view('relatorio.imprimirRelatorio', compact('id', 'empresas', 'item', 'relatorios', 'itensQuantidade', 'processo'));
     }
-
     /**
      * Update the specified resource in storage.
      *

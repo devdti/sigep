@@ -57,6 +57,7 @@ Route::get('/gerarRelatorio/{id}','HomeController@gerarRelatorio')->name('gerarR
 Route::get('listarProcessos','ProcessoController@show')->name('listarProcessos');
 Route::get('/listarProcessosEncerrados','ProcessoController@showEncerrados')->name('listarProcessosEncerrados');
 Route::post('/finalizarProcesso/{id}','ProcessoController@finalizarProcesso')->name('finalizarProcesso');
+Route::get('/imprimirRelatorio/{id}','ProcessoController@imprimirRelatorio')->name('imprimirRelatorio');
 
 //editar valores item empresa
 Route::get('editarValor/{id}','HomeController@editarValor')->name('editarValor');
