@@ -9,10 +9,35 @@
         {{Session('mensage')}}
         @endif
       </p>
-      <img class="rounded mx-auto d-block" src="https://comerciolocal.camaragibe.pe.gov.br/images/logo_prefeituracamaragibe2.png" alt="">
-      <h3 class="text-center">Sistema de compras</h3>
-    </div>
 
+      <h3 class="text-center">Sistema de Gerenciamento de Escolha de Preço</h3>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card-counter primary">
+            <i class="fas fa-file-alt"></i>
+            <span class="count-numbers">{{$quantidadeProcessos}}</span>
+            <span class="count-name">Quantidade Processos</span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card-counter success">
+            <i class="fab fa-buffer"></i>
+            <span class="count-numbers">{{$quantidadeItens}}</span>
+            <span class="count-name">Quantidade Itens</span>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card-counter info">
+            <i class="fa fa-building" aria-hidden="true"></i>
+            <span class="count-numbers">{{$quantidadeEmpresas}}</span>
+            <span class="count-name">Quantidade Empresas</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 <!-- /.container-fluid -->

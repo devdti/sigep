@@ -16,28 +16,14 @@
                 @endif
             </div>
             <div class="card-body">
-                <select id="myInput" class="form-control " i>
-                    <option value="">Selecione o filtro</option>
-                    <option value="Concluído">Concluído</option>
-                    <option value="Pendente">Pendente</option>
-                    <option value="">Tudo</option>
-                </select>
+
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 
                         <div id="accordion">
                             @foreach($item as $itens)
                             <!--script para filtro  -->
-                            <script>
-                                $(document).ready(function() {
-                                    $("#myInput").change(function(event) {
-                                        var value = event.currentTarget.value;
-                                        $("#myTable{{$itens->id}} tr").filter(function() {
-                                            $(this).toggle($(this).text().indexOf(value) > -1)
-                                        });
-                                    });
-                                });
-                            </script>
+
                             <table class="col-md-12">
                                 <thead>
                                 </thead>
@@ -72,10 +58,11 @@
                                                 <div class="row ">
                                                     <div class="col-sm ml-3 ">
 
-                                                        <label>Menor Valor : <strong for="" id="menorValor{{$itens->id}}"></strong></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                        <label>Quantidade : <strong id="quantidadeItem{{$itens->id}}">{{$itens->quantidade}}</strong></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                        <label>Valor total do Item : <strong for="" id="valorTotal{{$itens->id}}"></strong></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
+                                                        <label>Menor Valor: <strong>R$</strong> <strong for="" id="menorValor{{$itens->id}}"></strong></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        <label>Quantidade: <strong id="quantidadeItem{{$itens->id}}">{{$itens->quantidade}} {{$itens->unidade}}</strong></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        <label>Valor total do Item: <strong>R$</strong> <strong for="" id="valorTotal{{$itens->id}}"></strong></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        <br>Parâmetro Utilizado : <strong id="resultadoCotacao{{$itens->id}}"></strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        Resultado da Mediana : <strong id="resultadoCotacaoMediana{{$itens->id}}"></strong>
                                                     </div>
                                                 </div>
                                             </div>
@@ -103,7 +90,7 @@
                                                                                         <thead class="text-primary">
                                                                                             <th>Empresa</th>
                                                                                             <th>CNPJ</th>
-                                                                                            <th>Valor</th>
+                                                                                            <th>Valor(R$)</th>
                                                                                         </thead>
                                                                                         <tbody>
                                                                                             @foreach($relatorios as $relatorio)
@@ -144,7 +131,7 @@ menos de 70% (setenta por cento) da média aritmética dos demais preços analis
                                                                             <table class="table table-hover">
                                                                                 <thead class="text-primary">
                                                                                     <th>Empresa</th>
-                                                                                    <th>Valor</th>
+                                                                                    <th>Valor(R$)</th>
                                                                                     <th>Percentual</th>
                                                                                     <th>Status</th>
                                                                                     <!-- <th>Data</th>-->
@@ -167,7 +154,7 @@ média aritmética dos demais valores avaliados.">
                                                                             <table class="table table-hover">
                                                                                 <thead class="text-primary">
                                                                                     <th>Empresa</th>
-                                                                                    <th>Valor</th>
+                                                                                    <th>Valor(R$)</th>
                                                                                     <th>Percentual</th>
                                                                                     <th>Status</th>
                                                                                 </thead>
@@ -182,8 +169,8 @@ média aritmética dos demais valores avaliados.">
                                                                         <div class="card-header card-header-warning">
                                                                             <h4 class="card-title">Parâmetros da Cotação</h4>
                                                                             <p class="card-category">
-                                                                                Parâmetro Utilizado : <strong id="resultadoCotacao{{$itens->id}}"></strong> <br>
-                                                                                Resultado da Mediana : <strong id="resultadoCotacaoMediana{{$itens->id}}"></strong>
+                                                                                Parâmetro Utilizado : <strong id="resultadoCotacaoB{{$itens->id}}"></strong> <br>
+                                                                                Resultado da Mediana : <strong id="resultadoCotacaoMedianaB{{$itens->id}}"></strong>
                                                                             </p>
                                                                         </div>
                                                                         <div class="card-body table-responsive">
@@ -324,7 +311,7 @@ média aritmética dos demais valores avaliados.">
                                         var quantidadeItem = parseInt(document.getElementById('quantidadeItem{{$itens->id}}').textContent);
                                         //var resultadoMenorValor
                                         var totalValor = menorValor * quantidadeItem;
-                                            var colunaMedia = '<td>' + media.toFixed(2) + '</td>';
+                                        var colunaMedia = '<td>' + media.toFixed(2) + '</td>';
                                         //var colunaDesvio = '<td>' + desvio + '</td>';
                                         //var colunaQuadradoDesvio = '<td>' + quadradoDesvio + '</td>';
                                         var colunaSomaTodosQuadrados = '<td>' + somaTodosQuadrados + '</td>';
@@ -341,11 +328,17 @@ média aritmética dos demais valores avaliados.">
                                         if (colunaCoeficienteVariacao <= 25) {
                                             document.getElementById('resultadoCotacao{{$itens->id}}').append('Media');
                                             document.getElementById('resultadoCotacaoMediana{{$itens->id}}').append(media);
+                                            document.getElementById('resultadoCotacaoB{{$itens->id}}').append('Media');
+                                            document.getElementById('resultadoCotacaoMedianaB{{$itens->id}}').append(media);
+
 
                                             return '<tr>' + colunaCoeficienteVariacao + colunaVariancia + colunaDesvioPadrao + '</tr>'
                                         } else {
                                             document.getElementById('resultadoCotacao{{$itens->id}}').append('Mediana');
                                             document.getElementById('resultadoCotacaoMediana{{$itens->id}}').append(mediana);
+
+                                            document.getElementById('resultadoCotacaoB{{$itens->id}}').append('Mediana');
+                                            document.getElementById('resultadoCotacaoMedianaB{{$itens->id}}').append(media);
                                             return '<tr>' + colunaCoeficienteVariacao + colunaVariancia + colunaDesvioPadrao + '</tr>'
                                         }
                                     }
@@ -530,7 +523,15 @@ média aritmética dos demais valores avaliados.">
                                         <span class="icon text-white-50">
                                             <i class="fas fa-check"></i>
                                         </span>
-                                        <span class="text">Imprimir</span>
+                                        <span class="text">Imprimir Relatório simplificado</span>
+                                    </a>
+                                </div>
+                                <div class="col-4">
+                                    <a href="{{route('imprimirRelatorio',$processo->id)}}"  class="btn btn-success btn-icon-split">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-check"></i>
+                                        </span>
+                                        <span class="text">Imprimir Relatório Detalhado</span>
                                     </a>
                                 </div>
                                 @endif

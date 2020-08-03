@@ -7,8 +7,6 @@
         table {
             border-collapse: collapse;
             width: 100%;
-
-
         }
 
         th,
@@ -22,39 +20,28 @@
             padding: 2px;
             text-align: left;
             border-bottom: 2px solid #000;
-
-
         }
 
         .conteudo-left {
-
             width: 500px;
-
             height: 300px;
-
-
             background-color: #FF0;
-
         }
 
         .conteudo-right {
-
             width: 500px;
             margin-left: 600px;
             margin-top: -300px;
-
             height: 300px;
-
-
             background-color: #F00;
         }
     </style>
 </head>
 
-<body style="width:2400px; font-size: 14px;  ">
+<body style="max-width:100%; font-size: 14px;  ">
     <div class="container">
         <div style="margin-top: 20px;">
-            <img src="logorelatorio.jfif" width="30%">
+            <img src="../img/logo_prefeituracamaragibe.png" width="20%">
         </div>
         <h2 style="margin-left: 123px;">{{ date('d/m/Y' ,strtotime($processo->created_at))}} - {{$processo->nome}}</h2>
         <p style="margin-left: 123px; margin-top: -17px;">SECRETARIA DEMANDANTE: SECAD</p>
@@ -116,12 +103,12 @@
                                                                                     <div class="tab-content">
                                                                                         <div class="tab-pane active" id="profile">
                                                                                             <table class="table table-hover">
-                                                                                                <thead class="text-primary">
+                                                                                                <thead class="text-primary" style="display:none">
                                                                                                     <th>Empresa</th>
                                                                                                     <th>CNPJ</th>
                                                                                                     <th>Valor</th>
                                                                                                 </thead>
-                                                                                                <tbody>
+                                                                                                <tbody style="display:none">
                                                                                                     @foreach($relatorios as $relatorio)
                                                                                                     @if($itens->id == $relatorio->id_item)
                                                                                                     <tr class="empresas{{$itens->id}}">
@@ -151,18 +138,13 @@
                                                                         </div>
                                                                         <div class="col-lg-6 col-md-12">
                                                                             <div class="card">
-                                                                                <div class="card-header card-header-warning">
-                                                                                    <h5 class="card-title">Válidos <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="rigth" title="Será considerado manifestamente inexequível o preço cujo valor represente
-menos de 70% (setenta por cento) da média aritmética dos demais preços analisados. Conforme Art.10 da Resolução 001/2020/CGN">
-                                                                                        </i></h5>
-                                                                                </div>
                                                                                 <div class="card-body table-responsive">
                                                                                     <table class="table table-hover">
                                                                                         <thead class="text-primary">
                                                                                             <th></th>
                                                                                             <th>Valor</th>
                                                                                             <th>Percentual</th>
-                                                                                            <th>Status</th>
+                                                                                            <th>Status Válido/Inválido</th>
                                                                                             <!-- <th>Data</th>-->
                                                                                         </thead>
                                                                                         <tbody id="resultado{{$itens->id}}" class="resultEmpresa{{$itens->id}}">
@@ -175,14 +157,14 @@ menos de 70% (setenta por cento) da média aritmética dos demais preços analis
                                                                             <div class="card">
                                                                                 <div class="card-header card-header-warning">
                                                                                     <h5 class="card-title">Exequível <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="rigth" title="Será considerado excessivo o preço que for superior a 30% (trinta por cento) da
-média aritmética dos demais valores avaliados.">
+                                                                                        média aritmética dos demais valores avaliados.">
                                                                                         </i>
                                                                                     </h5>
                                                                                 </div>
                                                                                 <div class="card-body table-responsive">
                                                                                     <table class="table table-hover">
                                                                                         <thead class="text-primary">
-                                                                                            <th></th>
+                                                                                            <th>Nome</th>
                                                                                             <th>Valor</th>
                                                                                             <th>Percentual</th>
                                                                                             <th>Status</th>
@@ -262,59 +244,56 @@ média aritmética dos demais valores avaliados.">
                 function calcularMediaeMediana(empresas) {
                     // var status = empresas.map(empresa => empresa.status);
                     var valores = empresas.map(empresa => empresa.valor).sort();
-                    if (valores.length < 3) {
-                        $('#empresaFinal{{$itens->id}}').append("<label style='color:red'>Número de cotações mínimas não atingidas.</label>");
-                        $('#MediaMediana{{$itens->id}}').append("<label style='color:red'>Número de cotações mínimas não atingidas.</label>");
-                    } else {
-                        var somaTodosQuadrados = 0;
-                        var menorValor, totalValor, media, mediana, desvio, quadradoDesvio, variancia, coeficienteDeVariacao, desvioPadrao;
 
-                        empresas.forEach(function(empresa) {
-                            /*Soma todos os valores da lista de Exequiveis
-                            totalValor = valores.reduce((a, b) => a + b) * empresas.length;
-                            Não vai mais ser desta forma...**/
-                            //calcula a média dos exequiveis 1°
-                            //valores.filter(valor => valor != "empresa.valor");
-                            media = valores.reduce((a, b) => a + b) / empresas.length;
-                            //fim do calculo da media
-                            //calculo do desvio 2°
-                            menorValor = valores.reduce((a, b) => Math.min(a, b));
-                            desvio = empresa.valor - media;
-                            //fim do calculo
-                            // calculo Quadrado do desvio 3°
-                            quadradoDesvio = Math.pow(desvio, 2);
+                    var somaTodosQuadrados = 0;
+                    var menorValor, totalValor, media, mediana, desvio, quadradoDesvio, variancia, coeficienteDeVariacao, desvioPadrao;
 
-                            //fim do calculo do quadrado do desvio
-                            //calcular a soma de todos os quadrados
-                            somaTodosQuadrados += quadradoDesvio;
-                            //fim da soma de todos os quadrados
-                            //calcular a variancia 
-                            variancia = somaTodosQuadrados / valores.length;
-                            //fim do calculo da variancia
-                            somaTodosQuadrados.toFixed(2);
-                            //calcular o desvio Padrao
-                            desvioPadrao = Math.sqrt(variancia).toFixed(2);
-                            //fim do calculo desvio padrao
-                            //calcular o desvio Padrao
-                            coeficienteDeVariacao = ((desvioPadrao / media) * 100).toFixed(2);
-                            //fim do calculo desvio padrao
-                            //calculo da mediana
-                            if (empresas.length % 2 == 0) {
-                                let index1 = (empresas.length / 2) - 1; // aplicado o -1 pois a lista inicia em zero
-                                let index2 = (empresas.length / 2); //na formula solicita aplicação de +1 ao calculo, nao é necessario aplicar o -1 pois já retorna o valor esperado
-                                // atribui o valor da mediana.
-                                mediana = (valores[index1] + valores[index2]) / 2;
-                            } else {
-                                //encontra o numero da mediana
-                                let index = (empresas.length + 1) / 2;
+                    empresas.forEach(function(empresa) {
+                        /*Soma todos os valores da lista de Exequiveis
+                        totalValor = valores.reduce((a, b) => a + b) * empresas.length;
+                        Não vai mais ser desta forma...**/
+                        //calcula a média dos exequiveis 1°
+                        //valores.filter(valor => valor != "empresa.valor");
+                        media = valores.reduce((a, b) => a + b) / empresas.length;
+                        //fim do calculo da media
+                        //calculo do desvio 2°
+                        menorValor = valores.reduce((a, b) => Math.min(a, b));
+                        desvio = empresa.valor - media;
+                        //fim do calculo
+                        // calculo Quadrado do desvio 3°
+                        quadradoDesvio = Math.pow(desvio, 2);
 
-                                mediana = valores[index - 1]; //retorna o numero da mediana 
-                            }
-                            //fim do calculo da mediana
-                        });
-                        //Exibir Resultado                                                       mediana
-                        $('#MediaMediana{{$itens->id}}').append(criarLinhaCoeficienteVariacao(media, desvio, quadradoDesvio, somaTodosQuadrados, variancia, desvioPadrao, coeficienteDeVariacao, mediana, menorValor, totalValor));
-                    }
+                        //fim do calculo do quadrado do desvio
+                        //calcular a soma de todos os quadrados
+                        somaTodosQuadrados += quadradoDesvio;
+                        //fim da soma de todos os quadrados
+                        //calcular a variancia 
+                        variancia = somaTodosQuadrados / valores.length;
+                        //fim do calculo da variancia
+                        somaTodosQuadrados.toFixed(2);
+                        //calcular o desvio Padrao
+                        desvioPadrao = Math.sqrt(variancia).toFixed(2);
+                        //fim do calculo desvio padrao
+                        //calcular o desvio Padrao
+                        coeficienteDeVariacao = ((desvioPadrao / media) * 100).toFixed(2);
+                        //fim do calculo desvio padrao
+                        //calculo da mediana
+                        if (empresas.length % 2 == 0) {
+                            let index1 = (empresas.length / 2) - 1; // aplicado o -1 pois a lista inicia em zero
+                            let index2 = (empresas.length / 2); //na formula solicita aplicação de +1 ao calculo, nao é necessario aplicar o -1 pois já retorna o valor esperado
+                            // atribui o valor da mediana.
+                            mediana = (valores[index1] + valores[index2]) / 2;
+                        } else {
+                            //encontra o numero da mediana
+                            let index = (empresas.length + 1) / 2;
+
+                            mediana = valores[index - 1]; //retorna o numero da mediana 
+                        }
+                        //fim do calculo da mediana
+                    });
+                    //Exibir Resultado                                                       mediana
+                    $('#MediaMediana{{$itens->id}}').append(criarLinhaCoeficienteVariacao(media, desvio, quadradoDesvio, somaTodosQuadrados, variancia, desvioPadrao, coeficienteDeVariacao, mediana, menorValor, totalValor));
+
                 }
 
                 function criarLinhaCoeficienteVariacao(media, desvio, quadradoDesvio, somaTodosQuadrados, variancia, desvioPadrao, coeficienteVariacao, mediana, menorValor, totalValor) {
@@ -392,7 +371,7 @@ média aritmética dos demais valores avaliados.">
                     var colunaValor = '<td>' + empresa.valor + '</td>';
                     var colunaPercentual = '<td>' + empresa.percentual.toFixed(2) + '</td>';
                     var colunaStatus = '<td>' + empresa.status + '</td>';
-                    var colunaData = '<td>' + empresa.data + '</td>';
+
                     return '<tr class="' + classe + '{{$itens->id}}"> ' + colunaNome + colunaValor + colunaPercentual + colunaStatus + '</tr>'
                 }
 

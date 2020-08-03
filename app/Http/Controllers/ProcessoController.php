@@ -141,7 +141,7 @@ class ProcessoController extends Controller
     {
         $processo  = Processo::find($id);
         $item = DB::table('item')->where("processo_id", $id)->get();
-        $empresas = Empresa::all();
+        $empresas = Empresa::all()->where('processo_id',$id);
         $itensQuantidade = $item->count();
         $relatorios = Relatorio::all();
         return view('relatorio.imprimirRelatorio', compact('id', 'empresas', 'item', 'relatorios', 'itensQuantidade', 'processo'));

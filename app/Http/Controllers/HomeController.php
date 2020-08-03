@@ -30,7 +30,10 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('index');
+        $quantidadeProcessos = Processo::all()->count();
+        $quantidadeEmpresas = Empresa::all()->count();
+        $quantidadeItens = Item::all()->count();  
+        return view('index', compact('quantidadeProcessos','quantidadeEmpresas','quantidadeItens'));
     }
     public function empresaItens($id)
     {
