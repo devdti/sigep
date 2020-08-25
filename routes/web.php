@@ -5,6 +5,7 @@ use App\Http\Controllers\CalcularController;
 use App\Item;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,19 +20,28 @@ use Illuminate\Support\Facades\Route;
 */
 
 Auth::routes();
-Route::any('/calcular/{id}', 'HomeController@show')->name('calcular');
+//Route::any('/calcular/{id}', 'HomeController@show')->name('calcular');
 
 Route::get('/user', function () {
     return view('usuario.cadastroUsuario');
 });
-
-
+//HomeController
 Route::get('/', 'HomeController@index')->name('index');
-Route::get('/empresaItens/{id}', 'HomeController@empresaItens')->name('empresaItens');
+Route::any('/empresaItens/{id}', 'HomeController@empresaItens')->name('empresaItens');
+// HomeController cadastrar Item Empresa
+Route::any('/itemEmpresa','HomeController@show')->name('itemEmpresa');
+
+//HomeController Relatorio
+Route::post('/relatorio','HomeController@store')->name('relatorio');
+Route::get('/gerarRelatorio/{id}','HomeController@gerarRelatorio')->name('gerarRelatorio');
+Route::get('/imprimirRelatorio/{id}','ProcessoController@imprimirRelatorio')->name('imprimirRelatorio');
+Route::get('/relatorioPesquisa/{id}','ProcessoController@relatorioPesquisa')->name('relatorioPesquisa');
+
 
 //rotas de processo
 Route::get('/cadastroProcesso', 'ProcessoController@index')->name('cadastroProcesso');
 Route::post('/store', 'ProcessoController@store');
+Route::post('/reabrirProcesso','ProcessoController@reabrirProcesso')->name('reabrirProcesso');
 
 //cadastro Item
 Route::post('/storeItem', 'ItemController@store');
@@ -39,6 +49,12 @@ Route::get('/cadastroItem/{id}', 'ItemController@create')->name('cadastroItem');
 Route::get('destroyItem/{id}','ItemController@destroy')->name("destroyItem");
 Route::get('editarItem/{id}','ItemController@edit')->name("editarItem");
 Route::post('updateItem/{id}','ItemController@update')->name("updateItem");
+
+//editar valores item empresa
+Route::get('editarValor/{id}','HomeController@editarValor')->name('editarValor');
+Route::post('updateValor','HomeController@updateValor')->name('updateValor');
+Route::get('excluirValor/{id}','HomeController@excluirValor')->name('excluirValor');
+
 
 //Calculo Empresas
 Route::get('/cadastrarEmpresa/{id}', 'EmpresaController@index')->name('cadastrarEmpresa');
@@ -49,17 +65,11 @@ Route::post('/updateEmpresa/{id}','EmpresaController@update')->name('updateEmpre
 
 //status Processo
 Route::get('statusGeralProcesso/{id}','ProcessoController@statusGeralProcesso')->name('statusGeralProcesso');
-//cadastrar Item Empresa
-Route::get('/itemEmpresa/{id}','HomeController@show')->name('itemEmpresa');
-//Relatorio
-Route::post('/relatorio','HomeController@store')->name('relatorio');
-Route::get('/gerarRelatorio/{id}','HomeController@gerarRelatorio')->name('gerarRelatorio');
 Route::get('listarProcessos','ProcessoController@show')->name('listarProcessos');
 Route::get('/listarProcessosEncerrados','ProcessoController@showEncerrados')->name('listarProcessosEncerrados');
 Route::post('/finalizarProcesso/{id}','ProcessoController@finalizarProcesso')->name('finalizarProcesso');
-Route::get('/imprimirRelatorio/{id}','ProcessoController@imprimirRelatorio')->name('imprimirRelatorio');
 
-//editar valores item empresa
-Route::get('editarValor/{id}','HomeController@editarValor')->name('editarValor');
-Route::post('updateValor','HomeController@updateValor')->name('updateValor');
-Route::get('excluirValor/{id}','HomeController@excluirValor')->name('excluirValor');
+//legislacao
+Route::get('/legislacao','HomeController@legislacao')->name('legislacao');
+
+

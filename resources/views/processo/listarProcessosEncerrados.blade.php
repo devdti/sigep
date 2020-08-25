@@ -32,7 +32,7 @@
                                                     <div class="card-body">
                                                         <div class="row no-gutters align-items-center">
                                                             <div class="col mr-2">
-                                                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="font-size: 20px;">{{$processo->descricao}}</div>
+                                                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="font-size: 20px;">{{$processo->descricao}} - Protocolo : {{$processo->protocolo}}</div>
                                                             </div>
                                                             <div class="col-auto">
                                                                 <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -53,5 +53,6 @@
         </div>
     </div>
     <!-- /.container-fluid -->
+</div>
 </div>
 @endsection

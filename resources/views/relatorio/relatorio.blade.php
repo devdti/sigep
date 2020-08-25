@@ -5,7 +5,7 @@
 <div class="col-md-12" id="teste">
     <div class="container-fluid">
         <!-- Page Heading -->
-        <h1 class="h3 mb-2 text-gray-800">{{$processo->nome}}</h1>
+        <h1 class="h3 mb-2 text-gray-800">Nome cotação : {{$processo->nome}}  - Protocolo : {{$processo->protocolo}}</h1>
         <p class="mb-4">Ao Finalizar Processo, novas alterações só poderam ser feitas com a Permição do administrador. <br><strong>Obs: Para finalizar o processo é necessário ter 3 empresas exequiveis</strong></p>
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
@@ -16,12 +16,12 @@
                 @endif
             </div>
             <div class="card-body">
-
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 
                         <div id="accordion">
                             @foreach($item as $itens)
+
                             <!--script para filtro  -->
 
                             <table class="col-md-12">
@@ -38,23 +38,16 @@
                                                                 <h5>Número do item: {{$itens->numero}}</h5>
                                                             </button>
                                                             Status : <label for="" id="demo{{$itens->id}}"> </label>
-
                                                             <br>
-
                                                         </h5>
                                                         <label class="ml-3" style="margin-top:-40px">Descrição do item: {{$itens->descricao}}</label>
                                                     </div>
                                                     <div class="col-md5">
-
                                                         <button class="btn btn-link mt-2" data-toggle="collapse" data-target="#a{{$itens->id}}" class="#a{{$itens->id}}" aria-expanded="true" aria-controls="collapseOne">
                                                             <i class="fas fa-arrow-circle-down fa-3x"></i>
                                                         </button>
-
-
-
                                                     </div>
                                                 </div>
-
                                                 <div class="row ">
                                                     <div class="col-sm ml-3 ">
 
@@ -94,21 +87,15 @@
                                                                                         </thead>
                                                                                         <tbody>
                                                                                             @foreach($relatorios as $relatorio)
-                                                                                            @if($itens->id == $relatorio->id_item)
+                                                                                            @if($itens->id == $relatorio->item_id)
                                                                                             <tr class="empresas{{$itens->id}}">
                                                                                                 @foreach($empresas as $empresa)
-                                                                                                @if($relatorio->id_empresa == $empresa->id)
-                                                                                                <td>
-                                                                                                    {{$empresa->nome}}
-                                                                                                </td>
-                                                                                                <td>
-                                                                                                    {{$empresa->cnpj}}
-                                                                                                </td>
+                                                                                                @if($relatorio->empresa_id == $empresa->id)
+                                                                                                <td>{{$empresa->nome}}</td>
+                                                                                                <td>{{$empresa->cnpj}}</td>
+                                                                                                <td>{{$relatorio->valor}}</td>
                                                                                                 @endif
                                                                                                 @endforeach
-                                                                                                <td>
-                                                                                                    {{$relatorio->valor}}
-                                                                                                </td>
                                                                                             </tr>
                                                                                             @endif
                                                                                             @endforeach
@@ -319,16 +306,17 @@ média aritmética dos demais valores avaliados.">
                                         var colunaDesvioPadrao = '<td>' + desvioPadrao + '</td>';
                                         var colunaCoeficienteVariacao = '<td>' + coeficienteVariacao + '</td>';
                                         var colunaMediana = '<td>' + mediana.toFixed(2) + '</td>';
+
                                         //var colunaMenorValor = '<td>' + resultadoMenorValor + '</td>';
 
                                         var colunaTotalValor = '<td>' + totalValor + '</td>';
                                         document.getElementById('valorTotal{{$itens->id}}').append(totalValor);
                                         //Trazer o menor valor dos Exequiveis.
                                         document.getElementById('menorValor{{$itens->id}}').append(menorValor);
-                                        if (colunaCoeficienteVariacao <= 25) {
-                                            document.getElementById('resultadoCotacao{{$itens->id}}').append('Media');
+                                        if (coeficienteVariacao <= 25) {
+                                            document.getElementById('resultadoCotacao{{$itens->id}}').append('Média');
                                             document.getElementById('resultadoCotacaoMediana{{$itens->id}}').append(media);
-                                            document.getElementById('resultadoCotacaoB{{$itens->id}}').append('Media');
+                                            document.getElementById('resultadoCotacaoB{{$itens->id}}').append('Média');
                                             document.getElementById('resultadoCotacaoMedianaB{{$itens->id}}').append(media);
 
 
@@ -344,7 +332,9 @@ média aritmética dos demais valores avaliados.">
                                     }
 
                                     function calcularPercentual(empresas) {
+                                        
                                         var valores = empresas.map(empresa => empresa.valor).sort();
+                                        
                                         if (valores.length < 3) {
                                             $('#resultado{{$itens->id}}').append("<label style='color:red'>Número de cotações mínimas não atingidas.</label>");
                                         } else {
@@ -414,8 +404,11 @@ média aritmética dos demais valores avaliados.">
                                         });
                                     }
                                     var empresasHtml = document.getElementsByClassName('empresas{{$itens->id}}');
+                                    
                                     var empresasExequiveisHtml = document.getElementsByClassName('empresaFinalExequivel{{$itens->id}}')
+                                  
                                     var empresas = converterParaEmpresa(empresasHtml);
+                                    
                                     //calcular o percentual das empresas e exibe os resultados
                                     calcularPercentual(empresas);
                                     exibirResultado(empresas);
@@ -465,82 +458,49 @@ média aritmética dos demais valores avaliados.">
                                 </div>
                                 @if($processo->status != "Encerrado")
                                 <!-- Button trigger modal -->
-                                <button disabled id="finalizarProcesso" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                                    Finalizar Processo
-                                </button>
-
-                                <!-- Modal -->
-                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Selecione os parâmetros de pesquisa para finalizar o processo</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <form action="{{route('finalizarProcesso',$id)}}" method="post" enctype="multipart/form-data">
-                                                    @csrf
-                                                    <input type="hidden" name="idProcesso" value="{{$id}}">
-                                                    <div class="checkbox">
-                                                        <label><input name="painel_de_precos" type="checkbox" value="Painel De preços">Painel De preços</label>
-                                                    </div>
-                                                    <div class="checkbox">
-                                                        <label><input name="banco_de_precos" type="checkbox" value="Portal do banco de preços">Portal do banco de preços</label>
-                                                    </div>
-                                                    <div class="checkbox">
-                                                        <label><input name="contratacoes_similares" type="checkbox" value="Contratações similares de outros entes públicos">Contratações similares de outros entes públicos</label>
-                                                    </div>
-                                                    <div class="checkbox">
-                                                        <label><input name="pesquisa_publicada" type="checkbox" value="Pesquisa publicada em mídia especializada">Pesquisa publicada em mídia especializada</label>
-                                                    </div>
-                                                    <div class="checkbox">
-                                                        <label><input name="pesquisa_fornecedores" type="checkbox" value="Pesquisa com os fornecedores">Pesquisa com os fornecedores</label>
-                                                    </div>
-                                                    <div class="checkbox">
-                                                        <label><input name="justificativa" type="file"> - Justificativa do parâmetro adotado</label>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                        <input type="submit" class="btn btn-success" value="Finalizar Processo">
-                                                        <span class="icon text-white-50">
-                                                            <i class="fas fa-check"></i>
-                                                        </span>
-                                                    </div>
-                                                </form>
-                                            </div>
-
-
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                                @else
-                                <div class="col-4">
-                                    <a href="#" onclick="window.print()" class="btn btn-success btn-icon-split">
-                                        <span class="icon text-white-50">
-                                            <i class="fas fa-check"></i>
-                                        </span>
-                                        <span class="text">Imprimir Relatório simplificado</span>
-                                    </a>
-                                </div>
-                                <div class="col-4">
-                                    <a href="{{route('imprimirRelatorio',$processo->id)}}"  class="btn btn-success btn-icon-split">
-                                        <span class="icon text-white-50">
-                                            <i class="fas fa-check"></i>
-                                        </span>
-                                        <span class="text">Imprimir Relatório Detalhado</span>
-                                    </a>
-                                </div>
-                                @endif
+                                <form action="{{route('finalizarProcesso',$id)}}" method="post">
+                                    @csrf
+                                    <input type="hidden" name="idProcesso" value="{{$id}}">
+                                    <button disabled id="finalizarProcesso" type="submit" class="btn btn-primary">
+                                        Finalizar Processo
+                                    </button>
+                                </form>
                             </div>
+
                         </div>
+
+                        @else
+                        <div class="col-3">
+                            <a href="#" onclick="window.print()" class="btn btn-success btn-icon-split">
+                                <span class="icon text-white-50">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                                <span class="text">Imprimir Relatório simplificado</span>
+                            </a>
+                        </div>
+                        <div class="col-3">
+                            <a target="_blanc" href="{{route('imprimirRelatorio',$processo->id)}}" class="btn btn-success btn-icon-split">
+                                <span class="icon text-white-50">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                                <span class="text">Imprimir Relatório Detalhado</span>
+                            </a>
+                        </div>
+                        <div class="col-3">
+                            <a target="_blanc" href="{{route('relatorioPesquisa',$processo->id)}}" class="btn btn-success btn-icon-split">
+                                <span class="icon text-white-50">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                                <span class="text">Imprimir Relatório de Pesquisa</span>
+                            </a>
+                        </div>
+                        @endif
                 </div>
             </div>
         </div>
     </div>
+</div>
+</div>
 </div>
 @endsection
 <!-- End of Main Content -->

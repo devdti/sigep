@@ -1,8 +1,14 @@
 <!DOCTYPE html>
+
 <html>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <style>
         table {
             border-collapse: collapse;
@@ -35,162 +41,135 @@
             height: 300px;
             background-color: #F00;
         }
+
+        @media print {
+            #buttonImprimir {
+                display: none;
+            }
+        }
     </style>
 </head>
 
 <body style="max-width:100%; font-size: 14px;  ">
-    <div class="container">
-        <div style="margin-top: 20px;">
-            <img src="../img/logo_prefeituracamaragibe.png" width="20%">
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md"></div>
+                <div class="col-md"></div>
+                <div class="col-md">
+                    <div class="col-4">
+                        <a id="buttonImprimir" href="#" onclick="window.print()" class="btn btn-success btn-icon-split">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-check"></i>
+                            </span>
+                            <span class="text">Imprimir</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <h2 style="margin-left: 123px;">{{ date('d/m/Y' ,strtotime($processo->created_at))}} - {{$processo->nome}}</h2>
-        <p style="margin-left: 123px; margin-top: -17px;">SECRETARIA DEMANDANTE: SECAD</p>
+        <div style="margin-top: 20px;">
+            <img src="../img/logo_prefeituracamaragibe.png" width="30%">
+        </div>
+        <h5 style="margin-left: 105px;">{{$processo->id}}/{{ date('Y' ,strtotime($processo->created_at))}} - {{$processo->nome}}</h5>
+        <p style="margin-left: 105px; margin-top: -12px;">SECRETARIA DEMANDANTE: SECAD</p>
         <br>
         @foreach($item as $itens)
         <strong>
-            <p style="margin-bottom: -5px; font-size: 16px;">Nº: {{$itens->numero}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$itens->descricao}}</p>
+            <p style="margin-bottom: -25px; font-size: 16px; margin-bottom: -25px;">Nº: {{$itens->numero}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$itens->descricao}}</p>
         </strong><br>
         Status : <label for="" id="demo{{$itens->id}}"> </label>
-        <table style="width:2400; height: 3490 ">
+        <table>
             <thead>
                 <tr>
                     <hr style="color: #000;">
-                    <th>Parametro Utilizado :
-                        <strong id="resultadoCotacao{{$itens->id}}"></strong>
-                        </p>
+                    <th>Parametro Utilizado
                     </th>
-                    <th>Resultado Média/Mediana : <strong id="resultadoCotacaoMediana{{$itens->id}}"></strong></th>
-                    <th>Menor Preço Cotado : <strong for="" id="menorValor{{$itens->id}}"></strong></th>
-                    <th>Quantidade : <strong id="quantidadeItem{{$itens->id}}">{{$itens->quantidade}}</strong></th>
-                    <th>Valor Total : <strong for="" id="valorTotal{{$itens->id}}"></strong></th>
+                    <th>Resultado Média/Mediana</th>
+                    <th>Coeficiente de Variação</th>
+                    <th>Variância</th>
+                    <th>Desvio Padrão</th>
+                    <th>Menor Preço Cotado</th>
+                    <th>Quantidade</th>
+                    <th>Valor Total</th>
                 </tr>
             </thead>
-            <th>Coeficiente de Variação</th>
-            <th>Variancia</th>
-            <th>Desvio Padrão</th>
             <tbody id="MediaMediana{{$itens->id}}" class="MediaMedianaEmpresa{{$itens->id}}">
+                <tr>
+                    <td><strong id="resultadoCotacao{{$itens->id}}"></strong></td>
+                    <td><strong id="resultadoCotacaoMediana{{$itens->id}}"></strong></td>
+                    <td><strong id="colunaCoeficienteVariacao{{$itens->id}}"> </strong></td>
+                    <td><strong id="colunaVariancia{{$itens->id}}"> </strong></td>
+                    <td><strong id="colunaDesvioPadrao{{$itens->id}}"> </strong></td>
+                    <td><strong for="" id="menorValor{{$itens->id}}"></strong></td>
+                    <td><strong id="quantidadeItem{{$itens->id}}">{{$itens->quantidade}}</strong></td>
+                    <td><strong for="" id="valorTotal{{$itens->id}}"></strong></td>
+                </tr>
             </tbody>
-            <div class="col-md-12" id="teste">
-                <div class="container-fluid">
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h4 class="m-0 font-weight-bold text-primary">Resultado Cotação</h4>
+            <!-- Navbar -->
+            <!-- End Navbar -->
+            <div class="row">
+                <table class="table table-hover" style="display: none;">
+                    <thead class="text-primary">
+                        <th>Empresa</th>
+                        <th>CNPJ</th>
+                        <th>Valor</th>
+                        <th>Parametro de pesquisa</th>
+                    </thead>
+                    <tbody>
+                        @foreach($relatorios as $key=>$relatorio)
+                       
+                            
+                            @if( $itens->id == $relatorio->item_id)
+                            <tr class="empresas{{$itens->id}}">
+                            <td>{{$relatorio->nome}}</td>
+                            <td>{{$relatorio->cnpj}}</td>
+                            <td>{{$relatorio->valor}}</td>
+                            <td>{{$relatorio->parametro_pesquisa}}</td>
+                            </tr>
+                            @endif
+                        
+                        @endforeach
+                    </tbody>
+                </table>
+                <br>
+                <div style="margin-top: -20px;">
+                    <div class="row">
+                        <div class="col-8">
+                            <table style="width:2400; height: 3490">
+                                <thead class="text-primary">
+                                    <th>Empresa </th>
+                                    <th>Valor</th>
+                                    <th>Percentual</th>
+                                    <th>Avaliação de Válidade</th>
+                                    <th>Parâmetro de pesquisa</th>
+                                    <!-- <th>Data</th>-->
+                                </thead>
+                                <tbody id="resultado{{$itens->id}}" class="resultEmpresa{{$itens->id}}">
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <div id="accordion">
-                                        <table class="col-md-12">
-                                            <tbody id="myTable{{$itens->id}}">
-                                                <div class="card">
-                                                    <div id="a{{$itens->id}}" class="collapse " aria-labelledby="headingOne" data-parent="#accordion">
-                                                        <div class="card-body">
-                                                            <div class="main-panel">
-                                                                <!-- Navbar -->
-                                                                <!-- End Navbar -->
-                                                                <div class="content">
-                                                                    <div class="row">
-                                                                        <div class="col-lg-6 col-md-12">
-                                                                            <div class="card">
-                                                                                <div class="card-header card-header-primary">
-                                                                                    <p class="card-category">@if (session('mensageRelatorio'))
-                                                                                        <div class="alert alert-success" role="alert">
-                                                                                            {{ session('mensageRelatorio') }}
-                                                                                        </div>
-                                                                                        @endif</p>
-                                                                                </div>
-                                                                                <div class="card-body">
-                                                                                    <div class="tab-content">
-                                                                                        <div class="tab-pane active" id="profile">
-                                                                                            <table class="table table-hover">
-                                                                                                <thead class="text-primary" style="display:none">
-                                                                                                    <th>Empresa</th>
-                                                                                                    <th>CNPJ</th>
-                                                                                                    <th>Valor</th>
-                                                                                                </thead>
-                                                                                                <tbody style="display:none">
-                                                                                                    @foreach($relatorios as $relatorio)
-                                                                                                    @if($itens->id == $relatorio->id_item)
-                                                                                                    <tr class="empresas{{$itens->id}}">
-                                                                                                        @foreach($empresas as $empresa)
-                                                                                                        @if($relatorio->id_empresa == $empresa->id)
-                                                                                                        <td>
-                                                                                                            {{$empresa->nome}}
-                                                                                                        </td>
-                                                                                                        <td>
-                                                                                                            {{$empresa->cnpj}}
-                                                                                                        </td>
-                                                                                                        @endif
-                                                                                                        @endforeach
-                                                                                                        <td>
-                                                                                                            {{$relatorio->valor}}
-                                                                                                        </td>
-                                                                                                    </tr>
-                                                                                                    @endif
-                                                                                                    @endforeach
-                                                                                                </tbody>
-                                                                                            </table>
-                                                                                            <br>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="col-lg-6 col-md-12">
-                                                                            <div class="card">
-                                                                                <div class="card-body table-responsive">
-                                                                                    <table class="table table-hover">
-                                                                                        <thead class="text-primary">
-                                                                                            <th></th>
-                                                                                            <th>Valor</th>
-                                                                                            <th>Percentual</th>
-                                                                                            <th>Status Válido/Inválido</th>
-                                                                                            <!-- <th>Data</th>-->
-                                                                                        </thead>
-                                                                                        <tbody id="resultado{{$itens->id}}" class="resultEmpresa{{$itens->id}}">
-                                                                                        </tbody>
-                                                                                    </table>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="col-lg-6 col-md-12 mt-3">
-                                                                            <div class="card">
-                                                                                <div class="card-header card-header-warning">
-                                                                                    <h5 class="card-title">Exequível <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="rigth" title="Será considerado excessivo o preço que for superior a 30% (trinta por cento) da
-                                                                                        média aritmética dos demais valores avaliados.">
-                                                                                        </i>
-                                                                                    </h5>
-                                                                                </div>
-                                                                                <div class="card-body table-responsive">
-                                                                                    <table class="table table-hover">
-                                                                                        <thead class="text-primary">
-                                                                                            <th>Nome</th>
-                                                                                            <th>Valor</th>
-                                                                                            <th>Percentual</th>
-                                                                                            <th>Status</th>
-                                                                                        </thead>
-                                                                                        <tbody id="empresaFinal{{$itens->id}}">
-                                                                                        </tbody>
-                                                                                    </table>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </table>
+                        <div class="col-4" style="width: 30px; margin-top:-22px;">
+                            <div>
+                                <div class="card-body table-responsive">
+                                    <table style="max-width: 100%;">
+                                        <thead class="text-primary">
+                                            <th>Empresa </th>
+                                            <th>Percentual</th>
+                                            <th>Avaliação de Exequível </th>
+                                        </thead>
+                                        <tbody id="empresaFinal{{$itens->id}}" style="height: 33px;">
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </table>
+
+
         <script>
             $(document).ready(function() {
                 //criando objeto empresa
@@ -199,12 +178,13 @@
                         var nome = empresa.children[0].textContent;
                         var cnpj = empresa.children[1].textContent;
                         var valorEmpresa = parseFloat(empresa.children[2].textContent);
-                        var obj = creatObjetoEmpresa(nome, cnpj, valorEmpresa);
+                        var parametroPesquisa = empresa.children[3].textContent;
+                        var obj = creatObjetoEmpresa(nome, cnpj, valorEmpresa, parametroPesquisa);
                         return obj;
                     });
                 }
 
-                function creatObjetoEmpresa(nomeEmpresa, cnpj, valor) {
+                function creatObjetoEmpresa(nomeEmpresa, cnpj, valor, parametroPesquisa) {
                     return {
                         nome: nomeEmpresa,
                         cnpj: cnpj,
@@ -212,6 +192,7 @@
                         mediaDosDemais: null,
                         percentual: null,
                         status: null,
+                        parametroPesquisa: parametroPesquisa
                     };
                 }
                 //fim da criação objeto empresa
@@ -227,12 +208,13 @@
                     });
                 }
                 //cria o objeto da empresa com status Exequivel
-                function creatObjetoEmpresaExequivel(nomeEmpresa, valor, percentual, status) {
+                function creatObjetoEmpresaExequivel(nomeEmpresa, valor, percentual, status, ) {
                     return {
                         nome: nomeEmpresa,
                         valor: valor,
                         percentual: percentual,
                         status: status,
+
                     };
                 }
 
@@ -244,10 +226,8 @@
                 function calcularMediaeMediana(empresas) {
                     // var status = empresas.map(empresa => empresa.status);
                     var valores = empresas.map(empresa => empresa.valor).sort();
-
                     var somaTodosQuadrados = 0;
                     var menorValor, totalValor, media, mediana, desvio, quadradoDesvio, variancia, coeficienteDeVariacao, desvioPadrao;
-
                     empresas.forEach(function(empresa) {
                         /*Soma todos os valores da lista de Exequiveis
                         totalValor = valores.reduce((a, b) => a + b) * empresas.length;
@@ -262,7 +242,6 @@
                         //fim do calculo
                         // calculo Quadrado do desvio 3°
                         quadradoDesvio = Math.pow(desvio, 2);
-
                         //fim do calculo do quadrado do desvio
                         //calcular a soma de todos os quadrados
                         somaTodosQuadrados += quadradoDesvio;
@@ -286,14 +265,12 @@
                         } else {
                             //encontra o numero da mediana
                             let index = (empresas.length + 1) / 2;
-
                             mediana = valores[index - 1]; //retorna o numero da mediana 
                         }
                         //fim do calculo da mediana
                     });
                     //Exibir Resultado                                                       mediana
                     $('#MediaMediana{{$itens->id}}').append(criarLinhaCoeficienteVariacao(media, desvio, quadradoDesvio, somaTodosQuadrados, variancia, desvioPadrao, coeficienteDeVariacao, mediana, menorValor, totalValor));
-
                 }
 
                 function criarLinhaCoeficienteVariacao(media, desvio, quadradoDesvio, somaTodosQuadrados, variancia, desvioPadrao, coeficienteVariacao, mediana, menorValor, totalValor) {
@@ -304,25 +281,27 @@
                     //var colunaDesvio = '<td>' + desvio + '</td>';
                     //var colunaQuadradoDesvio = '<td>' + quadradoDesvio + '</td>';
                     var colunaSomaTodosQuadrados = '<td>' + somaTodosQuadrados + '</td>';
-                    var colunaVariancia = '<td>' + variancia.toFixed(2) + '</td>';
-                    var colunaDesvioPadrao = '<td>' + desvioPadrao + '</td>';
-                    var colunaCoeficienteVariacao = '<td>' + coeficienteVariacao + '</td>';
+                    var colunaVariancia = variancia.toFixed(2);
+                    var colunaDesvioPadrao = desvioPadrao;
+                    var colunaCoeficienteVariacao = coeficienteVariacao;
                     var colunaMediana = '<td>' + mediana.toFixed(2) + '</td>';
                     //var colunaMenorValor = '<td>' + resultadoMenorValor + '</td>';
-
                     var colunaTotalValor = '<td>' + totalValor + '</td>';
                     document.getElementById('valorTotal{{$itens->id}}').append(totalValor);
                     //Trazer o menor valor dos Exequiveis.
                     document.getElementById('menorValor{{$itens->id}}').append(menorValor);
                     if (colunaCoeficienteVariacao <= 25) {
-                        document.getElementById('resultadoCotacao{{$itens->id}}').append('Media');
+                        document.getElementById('resultadoCotacao{{$itens->id}}').append('Média');
                         document.getElementById('resultadoCotacaoMediana{{$itens->id}}').append(media);
-
-                        return '<tr>' + colunaCoeficienteVariacao + colunaVariancia + colunaDesvioPadrao + '</tr>'
+                        document.getElementById('colunaCoeficienteVariacao{{$itens->id}}').append(colunaCoeficienteVariacao);
+                        document.getElementById('colunaVariancia{{$itens->id}}').append(colunaVariancia);
+                        document.getElementById('colunaDesvioPadrao{{$itens->id}}').append(colunaDesvioPadrao);
                     } else {
                         document.getElementById('resultadoCotacao{{$itens->id}}').append('Mediana');
                         document.getElementById('resultadoCotacaoMediana{{$itens->id}}').append(mediana);
-                        return '<tr>' + colunaCoeficienteVariacao + colunaVariancia + colunaDesvioPadrao + '</tr>'
+                        document.getElementById('colunaCoeficienteVariacao{{$itens->id}}').append(colunaCoeficienteVariacao);
+                        document.getElementById('colunaVariancia{{$itens->id}}').append(colunaVariancia);
+                        document.getElementById('colunaDesvioPadrao{{$itens->id}}').append(colunaDesvioPadrao);
                     }
                 }
 
@@ -339,13 +318,11 @@
                             empresa.percentual = resultado;
                             if (resultado >= 30) {
                                 // se o resultado for > ou = a 30 então o codigo insere na tabela o texto...
-
                                 empresa.status = "<label style='color:red'>Excessivamente Elevado</label>"
                             } else {
                                 // caso contrario o sistema retorna que é valido.
                                 empresa.status = "Válido"
                             }
-
                         });
                     }
                 }
@@ -358,10 +335,8 @@
                 }
 
                 function exibirResultadoEmpresaFinal(empresas) {
-
                     empresas.forEach(function(empresa) {
-
-                        var linhaEmpresa = criarLinha(empresa, "empresaFinalExequivel");
+                        var linhaEmpresa = criarLinhaExequivel(empresa, "empresaFinalExequivel");
                         $('#empresaFinal{{$itens->id}}').append(linhaEmpresa);
                     })
                 }
@@ -371,7 +346,15 @@
                     var colunaValor = '<td>' + empresa.valor + '</td>';
                     var colunaPercentual = '<td>' + empresa.percentual.toFixed(2) + '</td>';
                     var colunaStatus = '<td>' + empresa.status + '</td>';
+                    var parametroPesquisa = '<td>' + empresa.parametroPesquisa + '</td>';
+                    return '<tr class="' + classe + '{{$itens->id}}"> ' + colunaNome + colunaValor + colunaPercentual + colunaStatus + parametroPesquisa + '</tr>'
+                }
 
+                function criarLinhaExequivel(empresa, classe) {
+                    var colunaNome = '<td>' + empresa.nome + '</td>';
+                    var colunaValor = '<td  style="display:none">' + empresa.valor + '</td>';
+                    var colunaPercentual = '<td>' + empresa.percentual.toFixed(2) + '</td>';
+                    var colunaStatus = '<td>' + empresa.status + '</td>';
                     return '<tr class="' + classe + '{{$itens->id}}"> ' + colunaNome + colunaValor + colunaPercentual + colunaStatus + '</tr>'
                 }
 
@@ -389,7 +372,7 @@
                         empresa.percentual = resultado;
                         if (resultado < 70) {
                             // se o resultado for > ou = a 30 então o codigo insere na tabela o texto...
-                            empresa.status = "<label style='color:red'> Inexequivel </label>";
+                            empresa.status = "<label style='color:red'> Inexequível </label>";
                         } else {
                             // caso contrario o sistema retorna que é valido.
                             empresa.status = "Exequível"
@@ -397,8 +380,10 @@
                     });
                 }
                 var empresasHtml = document.getElementsByClassName('empresas{{$itens->id}}');
+                console.log(empresasHtml);
                 var empresasExequiveisHtml = document.getElementsByClassName('empresaFinalExequivel{{$itens->id}}')
                 var empresas = converterParaEmpresa(empresasHtml);
+
                 //calcular o percentual das empresas e exibe os resultados
                 calcularPercentual(empresas);
                 exibirResultado(empresas);
@@ -429,6 +414,7 @@
                 }
             });
         </script>
+        <br><br>
         @endforeach
         <script>
             //calcular quantidade de empresas
@@ -437,48 +423,71 @@
     </div>
     <br><br>
 
-    <div class="col-2">
-        <a href="{{ url()->previous() }}" class="btn btn-info btn-icon-split">
-            <span class="icon text-white-50">
-                <i class="fa fa-arrow-left"></i>
-            </span>
-            <span class="text">Voltar</span>
-        </a>
     </div>
-    <div class="col-4">
-        <a href="#" onclick="window.print()" class="btn btn-success btn-icon-split">
-            <span class="icon text-white-50">
-                <i class="fas fa-check"></i>
-            </span>
-            <span class="text">Imprimir</span>
-        </a>
+    <div class="container">
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col-3">
+                <strong>
+                    <p>_____________________________</p>
+                </strong>
+                <strong>
+                    <p style="margin-top: -15px;">Nome Usuário:</p>
+                </strong>
+                <strong>
+                    <p style="margin-top: -15px;"> Codigo Identificador:</p>
+                </strong>
+            </div>
+            <div class="col-2"></div>
+            <div class="col-3">
+                <strong>
+                    <p>_____________________________</p>
+                </strong>
+                <strong>
+                    <p style="margin-top: -15px;">Nome Diretor:</p>
+                </strong>
+                <strong>
+                    <p style="margin-top: -15px;">Codigo Identificador:</p>
+                </strong>
+            </div>
+            <div class="col-3"></div>
+        </div>
+
     </div>
-    </div>
-    </footer>
-    <!-- Bootstrap core JavaScript-->
-    <script src="../vendor/jquery/jquery.min.js"></script>
-    <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- Core plugin JavaScript-->
-    <script src="../vendor/jquery-easing/jquery.easing.min.js"></script>
-    <!-- Custom scripts for all pages-->
-    <script src="../js/sb-admin-2.min.js"></script>
-    <!-- Page level plugins -->
-    <script src="../vendor/chart.js/Chart.min.js"></script>
-    <!-- Page level custom scripts -->
-    <script src="../js/demo/chart-area-demo.js"></script>
-    <script src="../js/demo/chart-pie-demo.js"></script>
-    <!-- Bootstrap core JavaScript-->
-    <script src="../vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
-    <!-- Page level plugins -->
-    <script src="vendor/chart.js/Chart.min.js"></script>
-    <!-- Page level custom scripts -->
-    <script src="js/demo/chart-area-demo.js"></script>
-    <script src="js/demo/chart-pie-demo.js"></script>
+    <br><br>
+    <hr style="color:#000; background:#000;">
+    <div class="container">
+        <div class="col-md-12">
+            <p>Observações:</p>
+            <br><br><br><br>
+        </div>
+
+        <div>
+            </footer>
+            <!-- Bootstrap core JavaScript-->
+            <script src="../vendor/jquery/jquery.min.js"></script>
+            <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+            <!-- Core plugin JavaScript-->
+            <script src="../vendor/jquery-easing/jquery.easing.min.js"></script>
+            <!-- Custom scripts for all pages-->
+            <script src="../js/sb-admin-2.min.js"></script>
+            <!-- Page level plugins -->
+            <script src="../vendor/chart.js/Chart.min.js"></script>
+            <!-- Page level custom scripts -->
+            <script src="../js/demo/chart-area-demo.js"></script>
+            <script src="../js/demo/chart-pie-demo.js"></script>
+            <!-- Bootstrap core JavaScript-->
+            <script src="../vendor/jquery/jquery.min.js"></script>
+            <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+            <!-- Core plugin JavaScript-->
+            <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+            <!-- Custom scripts for all pages-->
+            <script src="js/sb-admin-2.min.js"></script>
+            <!-- Page level plugins -->
+            <script src="vendor/chart.js/Chart.min.js"></script>
+            <!-- Page level custom scripts -->
+            <script src="js/demo/chart-area-demo.js"></script>
+            <script src="js/demo/chart-pie-demo.js"></script>
 </body>
 
 </html>

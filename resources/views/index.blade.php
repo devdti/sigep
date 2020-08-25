@@ -5,12 +5,8 @@
   <div class="col-md-12">
     <!--DESTACAR MENSAGEM DE CONCLUSÃO DE CADASTRO-->
     <div class="container-fluid">
-      <p>@if(Session('mensage'))
-        {{Session('mensage')}}
-        @endif
-      </p>
 
-      <h3 class="text-center">Sistema de Gerenciamento de Escolha de Preço</h3>
+      <h3 class="text-center">Sistema de Gerenciamento de Escolha de Preço - SIGEP</h3>
     </div>
     <div class="container">
       <div class="row">
@@ -36,6 +32,13 @@
             <span class="count-name">Quantidade Empresas</span>
           </div>
         </div>
+
+        @if(Session('mensage'))
+        <strong class="alert alert-success">{{Session('mensage')}}</strong>
+        @endif
+        @if(Session('mensageFail'))
+        <strong class="alert alert-danger">{{Session('mensageFail')}}</strong>
+        @endif
       </div>
     </div>
   </div>

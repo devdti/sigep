@@ -46,7 +46,10 @@ class ItemController extends Controller
         //
         $item = DB::table('item')->where("processo_id", $request->processo)->get();
         $itensQuantidade = $item->count();
-        $verificaExistencia = Item::all()->where('descricao',$request->descricao)->count();
+        $verificaExistencia = Item::all()->where([
+            'descricao'=>$request->descricao,
+            'processo_id'=>$request->processo
+            ])->count();
         if($verificaExistencia>0){
             return back()->with(["cadError" => 'O item já está cadastrado no sistema']);
         }

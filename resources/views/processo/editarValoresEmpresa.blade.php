@@ -12,12 +12,17 @@
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
           <div class="card-header py-3">
-            <h4 class="m-0 font-weight-bold text-primary">Empresa de exemplo</h4>
+            <h4 class="m-0 font-weight-bold text-primary">Empresa</h4>
           </div>
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <form action="{{route('updateValor')}}" method="post">
+                  @if(Session('status'))
+                  <div class="card shadow mb-4">
+                    <strong class="alert alert-success">{{Session('status')}}</strong>
+                  </div>
+                  @endif
                   @csrf
                   <thead>
                     <tr>
@@ -27,8 +32,8 @@
                   </thead>
                   <tbody>
                     <tr>
-                    <input type="hidden" name="id" value="{{$relatorio->id}}">
-                      
+                      <input type="hidden" name="id" value="{{$relatorio->id}}">
+
                       <td>
                         <div class="col-md-8">
                           <label for="">Digite o novo preço</label>
@@ -41,7 +46,7 @@
               <div class="container">
                 <div class="row">
                   <div class="col-2">
-                    <a href="{{route('itemEmpresa',$relatorio->id_empresa)}}" class="btn btn-info btn-icon-split">
+                    <a href="{{route('empresaItens',$relatorio->processo_id)}}" class="btn btn-info btn-icon-split">
                       <span class="icon text-white-50">
                         <i class="fa fa-arrow-left"></i>
                       </span>

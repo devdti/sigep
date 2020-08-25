@@ -98,6 +98,7 @@
                   <div class="col-2">
                     <a href="{{route('empresaItens',$processo->id)}}" class="btn btn-info btn-icon-split">
                       <span class="icon text-white-50">
+                      <i class="fa fa-arrow-left"></i>
                       </span>
                       <span class="text">voltar</span>
                     </a>

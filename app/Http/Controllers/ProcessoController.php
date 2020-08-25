@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Item;
+use App\Processo_empresa;
 use Symfony\Component\Process\Process;
 
 class ProcessoController extends Controller
@@ -41,7 +42,6 @@ class ProcessoController extends Controller
             return redirect('home')->with(['mensage' => 'Você precisa Abrir um processo.']);
         }
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -51,22 +51,30 @@ class ProcessoController extends Controller
     public function store(Request $request)
     {
         //Cadastro do processo
-        //$justificativaK = $request->file('justificativa_k')->store('anexos', 'public');
-        //$justificativaL = $request->file('justificativa_l')->store('anexos', 'public');
-        $imagem = new Processo();
-        $imagem->user_id = Auth::user()->id;
-        $imagem->nome = $request->nome;
-        $imagem->secretaria = $request->id_secretaria;
-        $imagem->cotacao = $request->cotacao;
-        $imagem->descricao = $request->descricao;
-        //$imagem->justificativa_k = $justificativaK;
-        //$imagem->justificativa_l = $justificativaL;
-
+        if (isset($request->referencia_doc)) {
+            //caso exista Referencia no cadastro do processo.
+            $imagem = new Processo();
+            $imagem->users_id = Auth::user()->id;
+            $imagem->protocolo = $request->protocolo;
+            $imagem->nome = $request->nome;
+            $imagem->secretaria_id = $request->id_secretaria;
+            $imagem->referencia = $request->referencia;
+            $imagem->descricao = $request->descricao;
+            $imagem->dataCriacao = $request->dataCriacao;
+            $imagem->referencia_doc = $request->file('referencia_doc')->store('anexos_referencia', 'public');
+        } else {
+            $imagem = new Processo();
+            $imagem->users_id = Auth::user()->id;
+            $imagem->protocolo = $request->protocolo;
+            $imagem->nome = $request->nome;
+            $imagem->secretaria_id = $request->id_secretaria;
+            $imagem->descricao = $request->descricao;
+            $imagem->dataCriacao = $request->dataCriacao;
+        }
         $verificaExistencia = Processo::all()->where('nome', $request->nome);
         if ($verificaExistencia->count() > 0) {
-            return back()->with(['mensage' => 'Processo Cadastrado Com Sucesso ']);
+            return back()->with(['mensage' => 'Processo já  Cadastrado no sistema ou ocorreram clicks demais no bottão, verifique em lista de processos.']);
         } else {
-
             $imagem->save();
             return redirect()->route('cadastroItem', $imagem->id)->with(['mensage' => 'Processo Cadastrado com sucesso']);
         }
@@ -74,36 +82,13 @@ class ProcessoController extends Controller
 
     public function finalizarProcesso(Request $request)
     {
-        $verificaQuantidadeEmpresas = Relatorio::all()->where('id_processo', $request->idProcesso)->count();
-        if ($verificaQuantidadeEmpresas >= 3) {
-            if (isset($request->justificativa)) {
-                //finalização do processo com justificativa.
-                $justificativa = $request->file('justificativa')->store('anexos', 'public');
-                $finalizarProcesso = Processo::find($request->idProcesso);
-                $finalizarProcesso->painel_de_precos = $request->painel_de_precos;
-                $finalizarProcesso->banco_de_precos = $request->banco_de_precos;
-                $finalizarProcesso->contratacoes_similares = $request->contratacoes_similares;
-                $finalizarProcesso->pesquisa_publicada = $request->pesquisa_publicada;
-                $finalizarProcesso->pesquisa_fornecedores = $request->pesquisa_fornecedores;
-                $finalizarProcesso->justificativa = $justificativa;
-                $finalizarProcesso->status = "Encerrado";
-                $finalizarProcesso->save();
-                return redirect()->route('index')->with(['mensage' => "Processo Encerrado"]);
-            } else {
-                //Finalização do processo sem justificativa
-                $finalizarProcesso = Processo::find($request->idProcesso);
-                $finalizarProcesso->painel_de_precos = $request->painel_de_precos;
-                $finalizarProcesso->banco_de_precos = $request->banco_de_precos;
-                $finalizarProcesso->contratacoes_similares = $request->contratacoes_similares;
-                $finalizarProcesso->pesquisa_publicada = $request->pesquisa_publicada;
-                $finalizarProcesso->pesquisa_fornecedores = $request->pesquisa_fornecedores;
-                $finalizarProcesso->status = "Encerrado";
-                $finalizarProcesso->save();
-                return redirect()->route('index')->with(['mensage' => "Processo Encerrado"]);
-            }
-        } else {
-            return redirect()->route('gerarRelatorio', $request->idProcesso)->with(['alerta' => "Você não pode finalizar o processo com menos de 3 empresas cadastradas no sistema"]);
-        }
+        //$verificaQuantidadeEmpresas = Processo_empresa::all()->where('processo_id', $request->idProcesso)->count();
+
+        //Finalização do processo sem justificativa
+        $finalizarProcesso = Processo::find($request->idProcesso);
+        $finalizarProcesso->status = "Encerrado";
+        $finalizarProcesso->save();
+        return redirect()->route('imprimirRelatorio', $request->idProcesso);
     }
     /**
      * Display the specified resource.
@@ -141,10 +126,35 @@ class ProcessoController extends Controller
     {
         $processo  = Processo::find($id);
         $item = DB::table('item')->where("processo_id", $id)->get();
-        $empresas = Empresa::all()->where('processo_id',$id);
+        $processoEmpresas = Processo_empresa::all()->where('processo_id', $id);
         $itensQuantidade = $item->count();
-        $relatorios = Relatorio::all();
-        return view('relatorio.imprimirRelatorio', compact('id', 'empresas', 'item', 'relatorios', 'itensQuantidade', 'processo'));
+        //$relatorios = Relatorio::all()->where('processo_id',$id);
+        $relatorios = DB::table('relatorio')
+            ->join("item", 'item.id', '=', 'relatorio.item_id')
+            ->join("processo_empresa", 'relatorio.processo_empresa_id', '=', 'processo_empresa.id')
+            ->join("empresa", 'processo_empresa.empresa_id', '=', 'empresa.id')
+            ->select('relatorio.*', 'processo_empresa.*', 'item.*', 'empresa.nome', 'empresa.cnpj')
+            ->where('relatorio.processo_id', $id)->get();
+
+        return view('relatorio.imprimirRelatorio', compact('id', 'processoEmpresas', 'item', 'relatorios', 'itensQuantidade', 'processo'));
+    }
+
+
+
+    public function relatorioPesquisa($id)
+    {
+        $processo  = Processo::find($id);
+        $item = DB::table('item')->where("processo_id", $id)->get();
+        $processoEmpresas = Processo_empresa::all()->where('processo_id', $id);
+        $itensQuantidade = $item->count();
+        //$relatorios = Relatorio::all()->where('processo_id',$id);
+        $relatorios = DB::table('relatorio')
+            ->join("item", 'item.id', '=', 'relatorio.item_id')
+            ->join("processo_empresa", 'relatorio.processo_empresa_id', '=', 'processo_empresa.id')
+            ->join("empresa", 'processo_empresa.empresa_id', '=', 'empresa.id')
+            ->select('relatorio.*', 'processo_empresa.*', 'item.*', 'empresa.*')
+            ->where('relatorio.processo_id', $id)->get();
+        return view('relatorio.relatorioPesquisa', compact('id', 'processoEmpresas', 'item', 'relatorios', 'itensQuantidade', 'processo'));
     }
     /**
      * Update the specified resource in storage.
@@ -156,6 +166,18 @@ class ProcessoController extends Controller
     public function update(Request $request, $id)
     {
         //
+    }
+    public function reabrirProcesso(Request $request)
+    {
+
+        $buscaProcesso = Processo::where('protocolo', $request->protocolo)->first();
+        if ($buscaProcesso != null) {
+            $processo = Processo::find($buscaProcesso->id);
+            $processo->status = "Aberto";
+            $processo->save();
+            return redirect()->route('index')->with(["mensage" => "O processo foi Reaberto"]);
+        }
+        return redirect()->route('index')->with(["mensageFail" => "O processo não foi encontrado faça uma nova consulta."]);
     }
 
     /**

@@ -5,8 +5,6 @@
     <div class="col-md-12">
         <div class="container-fluid">
             <!-- Page Heading -->
-            <h1 class="h3 mb-2 text-gray-800">Tables</h1>
-            <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official DataTables documentation</a>.</p>
             <!-- DataTales Example -->
             <p>@if(Session('mensage'))
                 {{Session('mensage')}}
@@ -14,14 +12,14 @@
             </p>
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h4 class="m-0 font-weight-bold text-primary">Processos</h4>
+                    <h4 class="m-0 font-weight-bold text-primary">Cotações em Abertos</h4>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th>Todos os Processos</th>
+                                    <th>Todas as Cotações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -34,8 +32,9 @@
                                                     <div class="card-body">
                                                         <div class="row no-gutters align-items-center">
                                                             <div class="col mr-2">
-                                                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="font-size: 20px;">{{$processo->nome}}</div>
+                                                                <div class="text-xs font-weight-bold text-primary text mb-1" style="font-size: 20px;">Nr.{{$processo->id}}.{{ date('Y' ,strtotime($processo->created_at))}} - {{$processo->nome}}</div>
                                                             </div>
+
                                                             <div class="col-auto">
                                                                 <i class="fas fa-calendar fa-2x text-gray-300"></i>
                                                             </div>
@@ -44,6 +43,7 @@
                                                 </div>
                                             </div>
                                         </a>
+
                                     </td>
                                 </tr>
                                 @endforeach
@@ -55,5 +55,6 @@
         </div>
     </div>
     <!-- /.container-fluid -->
+</div>
 </div>
 @endsection

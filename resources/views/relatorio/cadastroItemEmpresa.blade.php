@@ -12,7 +12,7 @@
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
           <div class="card-header py-3">
-            <h4 class="m-0 font-weight-bold text-primary">Empresa: {{$empresa->nome}} - CNPJ: {{$empresa->cnpj}}</h4>
+            <h4 class="m-0 font-weight-bold text-primary">Empresa: {{$empresaAtual->nome}} - CNPJ: {{$empresaAtual->cnpj}}</h4>
           </div>
           <div class="card-body">
             @if(Session('mensage'))
@@ -28,7 +28,7 @@
 
             <div class="table-responsive">
               <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <form action="../relatorio" method="post">
+                <form action="{{route('relatorio')}}" method="post">
                   @csrf
                   <input type="hidden" name="idEmpresa" value="{{$empresa->id}}">
                   <input type="hidden" name="idProcesso" value="{{$empresa->processo_id}}">
@@ -84,7 +84,7 @@
                         </tr>
                       </thead>
                       <tbody>
-                        @foreach($verificaExistencia as $itensExistentes)
+                        @foreach($buscaItemEmpresa as $itensExistentes)
                         <tr>
                           <td>{{$itensExistentes->numero}}</td>
                           <td>{{$itensExistentes->descricao}}</td>

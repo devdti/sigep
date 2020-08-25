@@ -9,6 +9,6 @@ class Relatorio extends Model
     //
     protected $table="relatorio";
     protected $fillable =[
-        'id','id_processo','id_item','id_empresa','valor'
+        'id','processo_id','processo_empresa_id','item_id','valor'
     ];
 }

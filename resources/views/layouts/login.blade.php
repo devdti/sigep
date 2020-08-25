@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Sig...</title>
+    <title>SIGEP</title>
 
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -32,7 +32,7 @@
                     <div class="card-body p-0">
                         <!-- Nested Row within Card Body -->
                         <div class="row">
-                            <img class="img-fluid" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRGZpNPF2QDQDPixkkGTghv9Y-2OxXD-qB3lg&usqp=CAU" alt="">
+                            <img class="img-fluid " src="../img/Camaragibe_Marca-1.png" style="max-width:50%" alt="">
                             <div class="col-lg-6 ">
                                 <div class="p-5">
                                     <div class="text-center">

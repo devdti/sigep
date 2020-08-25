@@ -10,11 +10,16 @@
     <div class="col-md-12">
       <div class="container-fluid">
         <!-- Page Heading -->
-       
+
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
           <div class="card-header py-3">
             <h4 class="m-0 font-weight-bold text-primary">Nova Cotação</h4>
+            @if(Session('mensage'))
+          <div class="card shadow mb-4">
+            <strong class="alert alert-danger">{{Session('mensage')}}</strong>
+          </div>
+          @endif
           </div>
           <div class="card-body">
             <div class="table-responsive">
@@ -26,13 +31,12 @@
                         <form action="store" method="post" enctype="multipart/form-data">
                           <!--Grid column-->
                           @csrf
+                          <input type="hidden" value="{{$n = date('dmyHis').mt_rand(0,999)}}" name="protocolo">
                           <div>
                             <div class="col-md-12">
                               <div class="md-form">
                                 <label for="message">Nome da Cotação</label>
                                 <input required type="text" id="message" name="nome" rows="2" class="form-control md-textarea"></textarea>
-                                
-                                
                               </div>
                             </div><br>
                             <div class="col-md-12">
@@ -41,22 +45,28 @@
                                 <select class="form-control" name="id_secretaria">
                                   <option value="null">Selecione a secretaria</option>
                                   @foreach ($secretarias as $secretaria)
-                                  <option>{{$secretaria->nome}}</option>
+                                  <option value="{{$secretaria->id}}">{{$secretaria->nome}}</option>
                                   @endforeach
                                 </select>
                               </div>
                             </div><br>
                             <div class="col-md-12">
                               <div class="md-form">
-                                <label for="message">Documento de Referência</label>
-                                <input required type="text" id="message" name="cotacao" class="form-control md-textarea"></textarea>
+                                <label for="message">Data de criação do documento</label>
+                                <input  type="date" name="dataCriacao">
                               </div>
                             </div><br>
-                            
+                            <div class="col-md-12">
+                              <div class="md-form">
+                                <label for="message">Documento de Referência</label>
+                                <input  type="text" id="message" name="referencia" class="form-control md-textarea"><br>
+                                <input type="file" name="referencia_doc" class="form">
+                              </div>
+                            </div><br>
                             <div class="col-md-12">
                               <div class="md-form">
                                 <label for="message">Finalidade da Cotação</label>
-                                <textarea  type="text" id="message" name="descricao" rows="2" class="form-control md-textarea"></textarea>
+                                <textarea type="text" id="message" name="descricao" rows="2" class="form-control md-textarea"></textarea>
                               </div>
                             </div><br>
                             <div class="center-on-small-only">

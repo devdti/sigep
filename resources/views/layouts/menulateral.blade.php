@@ -26,64 +26,65 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <style>
-        .card-counter{
-    box-shadow: 2px 2px 10px #DADADA;
-    margin: 5px;
-    padding: 20px 10px;
-    background-color: #fff;
-    height: 100px;
-    border-radius: 5px;
-    transition: .3s linear all;
-  }
+        .card-counter {
+            box-shadow: 2px 2px 10px #DADADA;
+            margin: 5px;
+            padding: 20px 10px;
+            background-color: #fff;
+            height: 100px;
+            border-radius: 5px;
+            transition: .3s linear all;
+        }
 
-  .card-counter:hover{
-    box-shadow: 4px 4px 20px #DADADA;
-    transition: .3s linear all;
-  }
+        .card-counter:hover {
+            box-shadow: 4px 4px 20px #DADADA;
+            transition: .3s linear all;
+        }
 
-  .card-counter.primary{
-    background-color: #007bff;
-    color: #FFF;
-  }
+        .card-counter.primary {
+            background-color: #007bff;
+            color: #FFF;
+        }
 
-  .card-counter.danger{
-    background-color: #ef5350;
-    color: #FFF;
-  }  
+        .card-counter.danger {
+            background-color: #ef5350;
+            color: #FFF;
+        }
 
-  .card-counter.success{
-    background-color: #66bb6a;
-    color: #FFF;
-  }  
+        .card-counter.success {
+            background-color: #66bb6a;
+            color: #FFF;
+        }
 
-  .card-counter.info{
-    background-color: #26c6da;
-    color: #FFF;
-  }  
+        .card-counter.info {
+            background-color: #26c6da;
+            color: #FFF;
+        }
 
-  .card-counter i{
-    font-size: 5em;
-    opacity: 0.2;
-  }
+        .card-counter i {
+            font-size: 5em;
+            opacity: 0.2;
+        }
 
-  .card-counter .count-numbers{
-    position: absolute;
-    right: 35px;
-    top: 20px;
-    font-size: 32px;
-    display: block;
-  }
+        .card-counter .count-numbers {
+            position: absolute;
+            right: 35px;
+            top: 20px;
+            font-size: 32px;
+            display: block;
+        }
 
-  .card-counter .count-name{
-    position: absolute;
-    right: 35px;
-    top: 65px;
-    font-style: italic;
-    text-transform: capitalize;
-    opacity: 0.5;
-    display: block;
-    font-size: 18px;
-  }
+        .card-counter .count-name {
+            position: absolute;
+            right: 35px;
+            top: 65px;
+            font-style: italic;
+            text-transform: capitalize;
+            opacity: 0.5;
+            display: block;
+            font-size: 18px;
+        }
+
         body {
 
             margin-top: 10px;
@@ -185,6 +186,8 @@
             <div class="sidebar-heading">
                 Menu
             </div>
+            @if(Auth::user()->nivel != 3)
+
             <li class="nav-item">
                 <a href="/" class="nav-link" href="adicionar_item.html">
                     <i class="fa fa-home" aria-hidden="true"></i>
@@ -193,19 +196,55 @@
             <li class="nav-item">
                 <a href="{{route('cadastroProcesso')}}" class="nav-link" href="adicionar_item.html">
                     <i class="fas fa-file-alt"></i>
-                    <span>Nova cotação</span></a>
+                    <span>Nova Cotação</span></a>
             </li>
+            @endif
             <li class="nav-item">
                 <a class="nav-link" href="{{route('listarProcessos')}}">
                     <i class="fas fa-fw fa-table"></i>
-                    <span>listar Processos</span></a>
+                    <span>listar Cotações</span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{route('listarProcessosEncerrados')}}">
                     <i class="fas fa-archive"></i>
-                    <span>listar Processos Encerrados</span></a>
+                    <span>listar Cotações Encerrados</span></a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('legislacao')}}">
+                    <i class="fas fa-gavel"></i>
+                    <span>Legislação</span></a>
+            </li>
+            @if(Auth::user()->nivel == 0 || Auth::user()->nivel == 1 )
+            <li class="nav-item">
+                <button type="button" class="ml-3 btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                    Reabrir Processo
+                </button>
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Código Processo</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{route('reabrirProcesso')}}" method="post">
+                                    @csrf
+                                    <input class="form-control" type="text" name="protocolo">
 
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-success">Reabrir</button>
+                            </div>
+                                </form>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            @endif
             <!-- Divider -->
             <hr class="sidebar-divider">
             <!-- Divider -->
@@ -291,11 +330,10 @@
                                     <span aria-hidden="true">×</span>
                                 </button>
                             </div>
-                            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                             <div class="modal-footer">
                                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                                <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                    Logout
+                                <a class="btn btn-danger" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    SAIR
                                 </a>
 
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
