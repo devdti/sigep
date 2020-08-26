@@ -252,7 +252,9 @@ média aritmética dos demais valores avaliados.">
                                                 Não vai mais ser desta forma...**/
                                                 //calcula a média dos exequiveis 1°
                                                 //valores.filter(valor => valor != "empresa.valor");
+                                                
                                                 media = valores.reduce((a, b) => a + b) / empresas.length;
+
                                                 //fim do calculo da media
                                                 //calculo do desvio 2°
                                                 menorValor = valores.reduce((a, b) => Math.min(a, b));
@@ -332,22 +334,29 @@ média aritmética dos demais valores avaliados.">
                                     }
 
                                     function calcularPercentual(empresas) {
-                                        
                                         var valores = empresas.map(empresa => empresa.valor).sort();
                                         
                                         if (valores.length < 3) {
                                             $('#resultado{{$itens->id}}').append("<label style='color:red'>Número de cotações mínimas não atingidas.</label>");
                                         } else {
+
                                             empresas.forEach(function(empresa) {
-                                                var listaValores = valores.filter(valor => valor != empresa.valor);
+                                                var listaValores = valores.filter(valor => valor);
+                                                var j1 = 0.25 * (listaValores.length+1);
+                                                var q1  = (listaValores[0]+listaValores[1])/2;
+                                                var j3 = 0.75*(listaValores.length+1);
+                                                var tamanho = listaValores.length;
+                                                var q3 =(listaValores[tamanho-1]+listaValores[tamanho-2])/2;
                                                 var total = listaValores.reduce((a, b) => a + b);
                                                 var totalFinal = total / (empresas.length - 1);
                                                 var resultado = ((empresa.valor * 100) / totalFinal) - 100;
                                                 empresa.percentual = resultado;
-                                                if (resultado >= 30) {
+                                                console.log(empresa.valor);
+                                                if (empresa.valor > q1 || empresa.valor > q3) {
                                                     // se o resultado for > ou = a 30 então o codigo insere na tabela o texto...
-
-                                                    empresa.status = "<label style='color:red'>Excessivamente Elevado</label>"
+                                                    //veriicar se os dados e eliminar os que nao corresponderem ao solicitado
+                                                    listaValores.splice(listaValores.indexOf(empresa.valor), 1);
+                                                    //empresa.status = "<label style='color:red'>Excessivamente Elevado</label>"
                                                 } else {
                                                     // caso contrario o sistema retorna que é valido.
                                                     empresa.status = "Válido"
